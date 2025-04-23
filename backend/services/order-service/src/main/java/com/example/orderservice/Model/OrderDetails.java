@@ -27,10 +27,10 @@ public class OrderDetails {
     private List<String> orderName;
     private List<String> Quantity;
     private List<String> price;
-//    private String totalPrice;
+    private String totalPrice;
 
     @Builder.Default
-    private String status = "Order Pending";
+    private String status = "prepared";
 
     private Binary image;
 

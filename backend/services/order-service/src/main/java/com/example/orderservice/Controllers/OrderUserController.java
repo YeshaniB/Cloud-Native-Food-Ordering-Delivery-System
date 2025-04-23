@@ -29,7 +29,7 @@ public class OrderUserController {
             @RequestParam("orderName") String[] orderNames,
             @RequestParam("quantity") String[] quantities,
             @RequestParam("price") String[] prices,
-//            @RequestParam("totalPrice") String totalPrice,
+            @RequestParam("totalPrice") String totalPrice,
             @RequestParam("image") MultipartFile imageFile
     ) throws Exception {
 
@@ -43,7 +43,7 @@ public class OrderUserController {
         order.setOrderName(Arrays.asList(orderNames));
         order.setQuantity(Arrays.asList(quantities));
         order.setPrice(Arrays.asList(prices));
-//        order.setTotalPrice(totalPrice);
+        order.setTotalPrice(totalPrice);
 
         // Save image as Binary
         order.setImage(new Binary(imageFile.getBytes()));
@@ -60,9 +60,16 @@ public class OrderUserController {
     }
 
 
-    @GetMapping("/fetchStudents")
-    public List<OrderDetails> fetchStudents() {
+    @GetMapping("/getOrderDetails")
+    public List<OrderDetails> getOrderDetails() {
         return orderDetailsRepo.findAll();
+    }
+
+
+    @GetMapping("/getPrepared")
+    public ResponseEntity<List<OrderDetails>> getOrdersByStatus() {
+        List<OrderDetails> preparedOrders = orderDetailsRepo.findByStatus("prepared");
+        return ResponseEntity.ok(preparedOrders);
     }
 
     private String generateNextOrderId() {
