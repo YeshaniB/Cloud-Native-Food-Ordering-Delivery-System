@@ -1,0 +1,71 @@
+package com.example.restaurantservice.controller;
+
+import com.example.restaurantservice.model.MenuItem;
+import com.example.restaurantservice.repository.MenuItemRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.List;
+import java.util.UUID;
+
+@CrossOrigin(origins = "http://localhost:3000")
+@RestController
+@RequestMapping("/api/menu")
+public class MenuItemController {
+
+    @Autowired
+    private MenuItemRepository repository;
+
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MenuItem addMenuItem(@RequestPart("item") MenuItem item,
+                                @RequestPart("image") MultipartFile file) throws IOException {
+        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path path = Paths.get("uploads/" + filename);
+        Files.createDirectories(path.getParent());
+        Files.write(path, file.getBytes());
+        item.setImageUrl(filename);
+        return repository.save(item);
+    }
+
+    @GetMapping
+    public List<MenuItem> getAll() {
+        return repository.findAll();
+    }
+
+    @PutMapping("/{id}")
+    public MenuItem update(@PathVariable Long id, @RequestBody MenuItem item) {
+        MenuItem existing = repository.findById(id).orElseThrow();
+        existing.setName(item.getName());
+        existing.setPrice(item.getPrice());
+        existing.setDescription(item.getDescription());
+        return repository.save(existing);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
+
+    @PatchMapping("/{id}/availability")
+    public MenuItem toggleAvailability(@PathVariable Long id) {
+        MenuItem item = repository.findById(id).orElseThrow();
+        item.setAvailable(!item.getAvailable());
+        return repository.save(item);
+    }
+
+    @GetMapping("/images/{filename}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
+        Path path = Paths.get("uploads/" + filename);
+        Resource resource = new UrlResource(path.toUri());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
+}
