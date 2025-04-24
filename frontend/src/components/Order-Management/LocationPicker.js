@@ -1,34 +1,40 @@
-// LocationPicker.jsx
-import React, { useRef, useCallback } from "react";
-import { LoadScript } from "@react-google-maps/api";
+// components/MapSelector.js
+import React, { useEffect, useRef } from 'react';
 
-const libraries = ["places"];
+const MapSelector = ({ onSelectLocation }) => {
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
-const LocationPicker = ({ onAddressSelect }) => {
-  const inputRef = useRef(null);
-
-  const handleLoad = useCallback(() => {
-    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
-      types: ["geocode"],
+  useEffect(() => {
+    const map = new window.google.maps.Map(mapRef.current, {
+      center: { lat: 6.9271, lng: 79.8612 }, // Default to Colombo
+      zoom: 13,
     });
 
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (place.formatted_address) {
-        onAddressSelect(place.formatted_address);
+    map.addListener('click', async (event) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+
+      if (markerRef.current) {
+        markerRef.current.setMap(null);
       }
-    });
-  }, [onAddressSelect]);
 
-  return (
-    <LoadScript googleMapsApiKey="YOUR_API_KEY" libraries={libraries} onLoad={handleLoad}>
-      <input
-        ref={inputRef}
-        placeholder="Enter your address"
-        style={{ width: "100%", padding: "10px", fontSize: "16px" }}
-      />
-    </LoadScript>
-  );
+      markerRef.current = new window.google.maps.Marker({
+        position: { lat, lng },
+        map,
+      });
+
+      // Get address from coordinates
+      const geocoder = new window.google.maps.Geocoder();
+      const response = await geocoder.geocode({ location: { lat, lng } });
+      const address = response.results?.[0]?.formatted_address || '';
+
+      onSelectLocation({ lat, lng, address });
+    });
+  }, [onSelectLocation]);
+
+  return <div ref={mapRef} style={{ height: '400px', width: '100%' }} />;
 };
 
-export default LocationPicker;
+export default MapSelector;
+

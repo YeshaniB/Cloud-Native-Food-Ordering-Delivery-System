@@ -1,168 +1,168 @@
-import React, { useState } from 'react';
-import Burger from './Images/Burger.jpg'
-import Pizza from './Images/Pizza.jpg'
-import {PrimeReactProvider} from 'primereact/api';
-import {
-  Container,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  Button,
-  IconButton,
-  Collapse,
-  Box,
-} from '@mui/material';
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import React, { useState, useEffect } from 'react';
+import { Button } from 'primereact/button';
+import { Tag } from 'primereact/tag';
+import { Dialog } from 'primereact/dialog';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Card } from 'primereact/card';
+import { Image } from 'primereact/image';
+import { Steps } from 'primereact/steps';
+import { Panel } from 'primereact/panel';
+import axios from 'axios';
+import Burger from './Images/Burger.jpg';
+import Pizza from './Images/Pizza.jpg';
 
-const dummyOrders = [
-  {
-    id: 'ORD123',
-    date: '2025-04-09',
-    items: ['Burger', 'Fries', 'Coke'],
-    total: 12.99,
-    status: 'Delivered',
-    customerName: 'Pasan',
-    address: '123 Main Street, City',
-    image: Burger,
-  },
-  {
-    id: 'ORD124',
-    date: '2025-04-10',
-    items: ['Pizza', 'Salad'],
-    total: 18.75,
-    status: 'Preparing',
-    customerName: 'Pasan',
-    address: '456 Oak Avenue, City',
-    image: Pizza,
-  },
-];
-
-const getStatusColor = (status) => {
-  switch (status) {
-    case 'Delivered':
-      return 'success';
-    case 'Preparing':
-      return 'warning';
-    case 'Cancelled':
-      return 'error';
-    default:
-      return 'default';
-  }
+const getStatusIndex = (status) => {
+  const stages = ['Pending', 'Preparing', 'On the way', 'Delivered', 'Cancelled'];
+  return stages.findIndex(s => s.toLowerCase() === status.toLowerCase());
 };
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState(dummyOrders);
-  const [openRow, setOpenRow] = useState(null); // Track which row is open
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('All');
 
-  const handleCancel = (id) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === id ? { ...order, status: 'Cancelled' } : order
-    );
-    setOrders(updatedOrders);
+  const orderStages = [
+    { label: 'Pending' },
+    { label: 'Preparing' },
+    { label: 'On the way' },
+    { label: 'Delivered' },
+    { label: 'Cancelled' }
+  ];
+
+  useEffect(() => {
+    axios.get('http://localhost:8081/getOrderDetails')
+      .then((response) => {
+        const processedOrders = response.data.map((order) => ({
+          id: order.orderId,
+          date: order.orderDate,
+          items: order.orderName,
+          quantities: Array.isArray(order.orderQuantity) ? order.orderQuantity : [],
+          total: parseFloat(order.totalPrice),
+          status: 'On the way',
+          customerName: order.customerName,
+          address: order.customerAddress,
+          image: order.orderName.includes("Pizza") ? Pizza : Burger,
+        }));
+        setOrders(processedOrders);
+      })
+      .catch((error) => console.error("Failed to fetch orders", error));
+  }, []);
+
+  const filteredOrders = statusFilter === "All"
+    ? orders
+    : orders.filter(order => order.status.toLowerCase() === statusFilter.toLowerCase());
+
+  const showOrderDetails = (order) => {
+    setSelectedOrder(order);
+    setShowDialog(true);
   };
 
-  const handleToggle = (id) => {
-    setOpenRow((prevId) => (prevId === id ? null : id));
+  const cancelOrder = (id) => {
+    setOrders(prev => prev.map(o => o.id === id ? { ...o, status: 'Cancelled' } : o));
   };
+
+  const statusBody = (rowData) => (
+    <Tag severity={getStatusSeverity(rowData.status)} value={rowData.status} />
+  );
+
+  const actionBody = (rowData) => (
+    <div className="flex gap-2">
+      <Button
+        icon="pi pi-search"
+        className="p-button-rounded p-button-info"
+        onClick={() => showOrderDetails(rowData)}
+        tooltip="View Details"
+      />
+      {rowData.status === 'Pending' && (
+        <Button
+          icon="pi pi-times"
+          className="p-button-rounded p-button-danger"
+          onClick={() => cancelOrder(rowData.id)}
+          tooltip="Cancel Order"
+        />
+      )}
+    </div>
+  );
+
+  const getStatusSeverity = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pending': return 'warning';
+      case 'preparing': return 'info';
+      case 'on the way': return 'secondary';
+      case 'delivered': return 'success';
+      case 'cancelled': return 'danger';
+      default: return null;
+    }
+  };
+
+  const dialogFooter = (
+    <Button label="Close" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
+  );
 
   return (
-    <Container maxWidth="md" sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        My Orders
-      </Typography>
+    <div className="p-5">
+      {/* Status Filter Navbar */}
+      <div className="flex gap-2 mb-4">
+        {["All", "Pending", "Preparing", "On the way", "Delivered", "Cancelled"].map((status) => (
+          <Button
+            key={status}
+            label={status}
+            className={statusFilter === status ? 'p-button-outlined p-button-info' : 'p-button-text'}
+            onClick={() => setStatusFilter(status)}
+          />
+        ))}
+      </div>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell></TableCell>
-              <TableCell>Order ID</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Total ($)</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <React.Fragment key={order.id}>
-                <TableRow>
-                  <TableCell>
-                    <IconButton
-                      onClick={() => handleToggle(order.id)}
-                      size="small"
-                    >
-                      {openRow === order.id ? (
-                        <KeyboardArrowUp />
-                      ) : (
-                        <KeyboardArrowDown />
-                      )}
-                    </IconButton>
-                  </TableCell>
-                    <TableCell>    
-                        <img
-                        src={order.image}
-                        alt="Food"
-                        style={{ width: 80, height: 60, borderRadius: 8 }}
-                        />
-                    </TableCell>
-                  <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.date}</TableCell>
-                  <TableCell>{order.total.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Chip label={order.status} color={getStatusColor(order.status)} />
-                  </TableCell>
-                  <TableCell align="center">
-                    {order.status === 'Preparing' ? (
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleCancel(order.id)}
-                      >
-                        Cancel
-                      </Button>
-                    ) : (
-                      <Typography variant="body2" color="text.secondary">
-                        N/A
-                      </Typography>
-                    )}
-                  </TableCell>
-                </TableRow>
+      <Card title="My Orders" className="shadow-4">
+        <DataTable value={filteredOrders} responsiveLayout="scroll">
+          <Column header="Image" body={(rowData) => (
+            <Image src={rowData.image} alt="food" width="60" preview />
+          )} />
+          <Column field="id" header="Order ID" />
+          <Column field="date" header="Date" />
+          <Column field="total" header="Total (Rs.)" body={(rowData) => rowData.total.toFixed(2)} />
+          <Column header="Status" body={statusBody} />
+          <Column header="Actions" body={actionBody} style={{ textAlign: 'center', width: '150px' }} />
+        </DataTable>
+      </Card>
 
-                {/* COLLAPSE ROW */}
-                <TableRow>
-                  <TableCell colSpan={6} sx={{ paddingBottom: 0, paddingTop: 0}}>
-                    <Collapse in={openRow === order.id} timeout="auto" unmountOnExit>
-                      <Box margin={2} sx={{ paddingBottom: 0, paddingTop: 0, marginLeft:10}} >
-                        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
-                          Order Details
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Customer Name:</strong> {order.customerName}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Delivery Address:</strong> {order.address}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Ordered Items:</strong> {order.items.join(', ')}
-                        </Typography>
-                      </Box>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+      <Dialog
+        header="Order Details"
+        visible={showDialog}
+        style={{ width: '50vw' }}
+        modal
+        footer={dialogFooter}
+        onHide={() => setShowDialog(false)}
+      >
+        {selectedOrder && (
+          <>
+            <div className="mb-2">
+              <Steps model={orderStages} activeIndex={getStatusIndex(selectedOrder.status)} readOnly />
+            </div>
+            <div className="mb-4">
+              <Panel header="Your Details" style={{ marginBottom: '1rem', paddingBottom: "5px"}}>
+              <strong>Customer:</strong> {selectedOrder.customerName}<br />
+              <strong style={{ marginTop: "25px"}}>Address:</strong> {selectedOrder.address}<br />
+              <strong>Date:</strong> {selectedOrder.date}<br />
+              <strong>Total:</strong> Rs. {selectedOrder.total.toFixed(2)}
+              </Panel>
+            </div>
+
+              <Panel header="Ordered Items" style={{ marginBottom: '1rem' }}>
+                <ul>
+                  {selectedOrder.items.map((item, idx) => (
+                    <li key={idx}>
+                      {item} - Rs. {((selectedOrder.total / selectedOrder.items.length).toFixed(2))} 
+                    </li>
+                  ))}
+                </ul>
+              </Panel>
+          </>
+        )}
+      </Dialog>
+    </div>
   );
 };
 
