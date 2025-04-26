@@ -2,6 +2,7 @@ package com.example.restaurantservice.controller;
 
 import com.example.restaurantservice.model.MenuItem;
 import com.example.restaurantservice.repository.MenuItemRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -23,30 +25,52 @@ public class MenuItemController {
     @Autowired
     private MenuItemRepository repository;
 
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public MenuItem addMenuItem(@RequestPart("item") MenuItem item,
-                                @RequestPart("image") MultipartFile file) throws IOException {
-        String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path path = Paths.get("uploads/" + filename);
-        Files.createDirectories(path.getParent());
-        Files.write(path, file.getBytes());
-        item.setImageUrl(filename);
-        return repository.save(item);
-    }
+
+@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public MenuItem addMenuItem(@RequestPart("item") String itemString,
+                            @RequestPart("image") MultipartFile file) throws IOException {
+    // Convert the String to MenuItem object
+    ObjectMapper mapper = new ObjectMapper();
+    MenuItem item = mapper.readValue(itemString, MenuItem.class);
+
+    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    Path path = Paths.get("uploads/" + filename);
+    Files.createDirectories(path.getParent());
+    Files.write(path, file.getBytes());
+
+    item.setImageUrl(filename);
+    return repository.save(item);
+}
+
 
     @GetMapping
     public List<MenuItem> getAll() {
         return repository.findAll();
     }
 
-    @PutMapping("/{id}")
-    public MenuItem update(@PathVariable Long id, @RequestBody MenuItem item) {
-        MenuItem existing = repository.findById(id).orElseThrow();
-        existing.setName(item.getName());
-        existing.setPrice(item.getPrice());
-        existing.setDescription(item.getDescription());
-        return repository.save(existing);
+    @GetMapping("/available")
+    public List<MenuItem> getAvailableItems() {
+        return repository.findByAvailableTrue();
     }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public List<MenuItem> getMenuItemsByRestaurant(@PathVariable Long restaurantId) {
+        return repository.findByRestaurantId(restaurantId);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MenuItem> update(@PathVariable Long id, @RequestBody MenuItem item) {
+        return repository.findById(id)
+                .map(existing -> {
+                    existing.setName(item.getName());
+                    existing.setPrice(item.getPrice());
+                    existing.setDescription(item.getDescription());
+                    return ResponseEntity.ok(repository.save(existing));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
