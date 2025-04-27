@@ -256,6 +256,83 @@
 
 // export default AddToCart;
 
+
+
+
+
+
+  // const getLocationAndAddress = () => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (position) => {
+  //       const { latitude, longitude } = position.coords;
+
+  //       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAlylaEx5-go5FqepdUypQX3g56HEnbUB0`;
+  //       const response = await fetch(geocodeUrl);
+  //       const data = await response.json();
+
+  //       if (data.status === 'OK') {
+  //         const address = data.results[0]?.formatted_address || '';
+  //         setCustomerAddress(address);
+  //       } else {
+  //         alert("Failed to retrieve address");
+  //       }
+  //     },
+  //     (error) => {
+  //       alert("Location access denied or error occurred");
+  //       console.error(error);
+  //     }
+  //   );
+  // };
+
+
+
+    // useEffect(() => {
+  //     if (status !== 'Offline') {
+  //         if (navigator.geolocation) {
+  //             navigator.geolocation.watchPosition((position) => {
+  //                 setLocation({
+  //                     lat: position.coords.latitude,
+  //                     lng: position.coords.longitude
+  //                 });
+  //             });
+  //         }
+  //     } else {
+  //         setLocation(null);
+  //     }
+  // }, [status]);
+
+//   useEffect(() => {
+//     if (status !== "Offline") {
+//         if (navigator.geolocation) {
+//             navigator.geolocation.watchPosition((position) => {
+//                 const lat = position.coords.latitude;
+//                 const lng = position.coords.longitude;
+
+//                 setLocation({ lat, lng });
+
+//                 // Reverse Geocode
+//                 const apiKey = "AIzaSyAlylaEx5-go5FqepdUypQX3g56HEnbUB0";
+//                 const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+//                 axios.get(geocodeUrl)
+//                     .then((response) => {
+//                         if (response.data.results.length > 0) {
+//                             setAddress(response.data.results[0].formatted_address);
+//                         } else {
+//                             setAddress("No address found");
+//                         }
+//                     })
+//                     .catch((error) => {
+//                         console.error("Geocoding error:", error);
+//                     });
+//             });
+//         }
+//     } else {
+//         setLocation(null);
+//         setAddress("");
+//     }
+// }, [status]);
+
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -268,6 +345,8 @@ import { Image } from 'primereact/image';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { Badge } from 'primereact/badge';
+import { Dropdown } from 'primereact/dropdown';
+import { Tag } from 'primereact/tag';
 
 import Burger from './Images/Burger.jpg';
 import Pizza from './Images/Pizza.jpg';
@@ -308,93 +387,127 @@ const OrderFood = () => {
   const [customerName, setCustomerName] = useState('John Doe');
   const [customerAddress, setCustomerAddress] = useState('');
 
+  const [restaurantItems, setRestaurantItems] = useState([]);
+
   const menuItems = restaurantMenus[restaurantId] || [];
   const restaurantName = restaurantNames[restaurantId] || 'Unknown Restaurant';
   const orderDate = new Date().toISOString().split('T')[0];
 
+  const mapRef = useRef(null);         // Reference to map div
+  const googleMapRef = useRef(null);   // Google Map instance
+  const markerRef = useRef(null);      // Marker instance
+  const [address, setAddress] = useState('');
 
-  // const getLocationAndAddress = () => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     async (position) => {
-  //       const { latitude, longitude } = position.coords;
-
-  //       const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAlylaEx5-go5FqepdUypQX3g56HEnbUB0`;
-  //       const response = await fetch(geocodeUrl);
-  //       const data = await response.json();
-
-  //       if (data.status === 'OK') {
-  //         const address = data.results[0]?.formatted_address || '';
-  //         setCustomerAddress(address);
-  //       } else {
-  //         alert("Failed to retrieve address");
-  //       }
-  //     },
-  //     (error) => {
-  //       alert("Location access denied or error occurred");
-  //       console.error(error);
-  //     }
-  //   );
-  // };
 
   const [showMap, setShowMap] = useState(false);
+  const [status, setStatus] = useState('Select Option');
 
-  // Load and render Google Map
-  useEffect(() => {
-    if (showMap && window.google) {
-      const map = new window.google.maps.Map(document.getElementById("map"), {
-        center: { lat: 7.8731, lng: 80.7718 },
-        zoom: 8
-      });
+  const [location, setLocation] = useState(null);
 
-      const marker = new window.google.maps.Marker({
-        position: map.getCenter(),
-        map,
-        draggable: true
-      });
+  const statusOptions = ['Select Option','Current Location', 'Enter Location'];
 
-      const geocoder = new window.google.maps.Geocoder();
 
-      marker.addListener("dragend", function () {
-        const position = marker.getPosition();
-        geocoder.geocode({ location: position }, (results, status) => {
-          if (status === "OK" && results[0]) {
-            setCustomerAddress(results[0].formatted_address);
-            setShowMap(false);
-          }
-        });
-      });
 
-      // Search box
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "Search location";
-      input.style.cssText =
-        "width: 300px; margin-top:10px; padding:5px; font-size:14px;";
-      map.controls[window.google.maps.ControlPosition.TOP_LEFT].push(input);
+  const increasePricesBy20 = () => {
+    // Iterate over each restaurant menu and update the price
+    Object.keys(restaurantMenus).forEach((restaurantId) => {
+      restaurantMenus[restaurantId] = restaurantMenus[restaurantId].map((item) => ({
+        ...item,
+        price: item.price * 1.2, // Increase the price by 20%
+      }));
+    });
+  
+    // After the increase, log the updated menu (optional)
+    console.log(restaurantMenus);
+  };
 
-      const searchBox = new window.google.maps.places.SearchBox(input);
-      map.addListener("bounds_changed", () => {
-        searchBox.setBounds(map.getBounds());
-      });
+useEffect(() => {
+  let watchId;
 
-      searchBox.addListener("places_changed", () => {
-        const places = searchBox.getPlaces();
-        if (places.length === 0) return;
-        const place = places[0];
-        if (!place.geometry || !place.geometry.location) return;
+  if (status !== "Select Option" && status !== "Enter Location") {
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          console.log("Live position:", position);
 
-        map.panTo(place.geometry.location);
-        marker.setPosition(place.geometry.location);
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
 
-        geocoder.geocode({ location: place.geometry.location }, (results, status) => {
-          if (status === "OK" && results[0]) {
-            setCustomerAddress(results[0].formatted_address);
-            setShowMap(false);
-          }
-        });
-      });
+          setLocation({ lat, lng });
+
+          const apiKey = "AIzaSyBAAu_9NQjq6m33d7_STIOiOHfC6ZuaEqg";
+          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+          axios.get(geocodeUrl)
+            .then((response) => {
+              console.log("Geocode full response:", response.data);
+              if (response.data.status === "OK" && response.data.results.length > 0) {
+                setAddress(response.data.results[0].formatted_address);
+              } else {
+                console.warn("No address found");
+                setAddress("No address found");
+              }
+            })
+            .catch((error) => {
+              console.error("Geocoding error:", error);
+              setAddress("Error fetching address");
+            });
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000000,
+          maximumAge: 0,
+        }
+      );
     }
-  }, [showMap]);
+  } else {
+    setLocation(null);
+    setAddress("");
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+  }
+
+  return () => {
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+  };
+}, [status]);
+
+useEffect(() => {
+  if (mapRef.current && location) {
+    const map = new window.google.maps.Map(mapRef.current, {
+      center: location,
+      zoom: 15,
+    });
+
+    googleMapRef.current = map;
+    markerRef.current = new window.google.maps.Marker({
+      position: location,
+      map,
+      title: 'Your Location',
+    });
+  }
+}, [location]);
+
+
+  const handleFindLocation = () => {
+    const geocoder = new window.google.maps.Geocoder();
+
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === 'OK' && results[0]) {
+        const location = results[0].geometry.location;
+
+        googleMapRef.current.setCenter(location);
+        googleMapRef.current.setZoom(15);
+        markerRef.current.setPosition(location);
+      } else {
+        alert('Location not found! Check the address and try again.');
+      }
+    });
+  };
+
+  
   
 
   const addToCart = (item) => {
@@ -425,7 +538,7 @@ const OrderFood = () => {
       const formData = new FormData();
       formData.append('orderDate', orderDate);
       formData.append('customerName', customerName);
-      formData.append('customerAddress', customerAddress);
+      formData.append('customerAddress', address);
 
       cart.forEach((item) => {
         formData.append('orderName', item.name);
@@ -561,9 +674,9 @@ const OrderFood = () => {
               <div key={item.id} className="p-d-flex p-ai-center p-mb-3">
                 <Image src={item.image} alt={item.name} width="60" preview className="p-mr-2" />
                 <div className="p-d-flex p-jc-between p-ai-center" style={{ width: '100%' }}>
-                  <span>
-                    {item.name} - Rs. {item.price.toFixed(2)} x {item.quantity}
-                  </span>
+                <span>
+              {item.name} - Rs. {item.price.toFixed(2)} x {item.quantity} = Rs. {(item.price * item.quantity).toFixed(2)}
+            </span>
                   <div>
                     <Button
                       icon="pi pi-minus"
@@ -601,26 +714,46 @@ const OrderFood = () => {
             <div className="p-field">
             <div className="p-field">
               <label htmlFor="customerAddress">Customer Address</label>
-              <div className="p-d-flex p-ai-center">
-                <InputText
-                  id="customerAddress"
-                  value={customerAddress}
-                  onChange={(e) => setCustomerAddress(e.target.value)}
-                  className="p-inputtext-sm"
-                  style={{ flex: 1 }}
+              <div className="p-d-flex p-ai-center" style={{ flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', width: '100%' }}>
+                  <InputText
+                    id="customerAddress"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="p-inputtext-sm"
+                    style={{ flex: 1 }}
+                    readOnly={status === 'Current Location'}
+                  />
+                <div>
+                <Dropdown
+                  value={status}
+                  options={statusOptions}
+                  onChange={(e) => {
+                    setStatus(e.value);
+                    setShowMap(e.value === 'Current Location'); // 👈 show map only for 'Current Location'
+                  }}
+                  placeholder="Select Status"
                 />
-                <Button
-                  icon="pi pi-map-marker"
-                  className="p-ml-2 p-button-rounded p-button-info"
-                  onClick={() => setShowMap(true)}
-                  tooltip="Select from Map"
-                />
-              </div>
+              </div>         
+
+             </div>
+
+  {/* Conditionally render the map only when showMap is true */}
+  {showMap && (
+  <div
+    id="map"
+    ref={mapRef}
+    style={{ height: '400px', width: '100%', marginTop: '1rem' }}
+  ></div>
+)}
+</div>
+
             </div>
       </div>
           </div>
         )}
       </Dialog>
+      <Card></Card>
     </div>
   );
 };

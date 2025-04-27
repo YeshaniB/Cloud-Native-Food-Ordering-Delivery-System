@@ -1,19 +1,30 @@
-// AdminSalesReports.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Chart } from 'primereact/chart';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const AdminSalesReports = () => {
   const navigate = useNavigate();
+  const [reportData, setReportData] = useState({ totalPrice: 0, orderCount: 0, decreasedTotal: 0 });
+
+  useEffect(() => {
+    axios.get('http://localhost:8081/getTotalPrice')
+      .then(response => {
+        setReportData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching report data:', error);
+      });
+  }, []);
 
   const salesData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
-        label: 'Revenue ($)',
+        label: 'Revenue Rs.',
         data: [4500, 7000, 6400, 8200, 9200, 11000],
         backgroundColor: 'rgba(59, 130, 246, 0.6)',
         borderColor: 'rgba(59, 130, 246, 1)',
@@ -26,13 +37,7 @@ const AdminSalesReports = () => {
 
   const options = {
     plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-        labels: {
-          color: '#334155'
-        }
-      },
+      legend: { display: true, position: 'top', labels: { color: '#334155' } },
       tooltip: {
         backgroundColor: '#1e293b',
         titleColor: '#fff',
@@ -42,29 +47,20 @@ const AdminSalesReports = () => {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          color: '#64748b'
-        },
-        grid: {
-          color: '#e2e8f0'
-        }
+        ticks: { color: '#64748b' },
+        grid: { color: '#e2e8f0' }
       },
       x: {
-        ticks: {
-          color: '#64748b'
-        },
-        grid: {
-          color: '#f1f5f9'
-        }
+        ticks: { color: '#64748b' },
+        grid: { color: '#f1f5f9' }
       }
     }
   };
 
   const insights = [
-    { label: 'Total Revenue', value: '$51,300' },
-    { label: 'Orders Count', value: '320' },
-    { label: 'Top Product', value: 'Strawberry Cake' },
-    { label: 'New Customers', value: '85' }
+    { label: 'Orders Count', value: reportData.orderCount },
+    { label: 'Total Income', value: `Rs. ${reportData.totalPrice.toLocaleString()}` },
+    { label: 'Restaurant Income', value: `Rs. ${reportData.decreasedTotal.toLocaleString()}` }, // Added decreasedTotal
   ];
 
   return (

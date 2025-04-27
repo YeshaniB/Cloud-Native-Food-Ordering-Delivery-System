@@ -24,14 +24,13 @@ public class OrderDetails {
     private String orderDate;
     private String customerName;
     private String customerAddress;
+//    private String contactNo;
     private List<String> orderName;
     private List<String> Quantity;
     private List<String> price;
     private String totalPrice;
 
     @Builder.Default
-    private String status = "prepared";
-
+    private String status = "Order Pending";
     private Binary image;
-
 }

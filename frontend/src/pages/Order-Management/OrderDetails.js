@@ -21,11 +21,12 @@ const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('Order Pending');
 
   const orderStages = [
     { label: 'Pending' },
     { label: 'Preparing' },
+    { label: 'Prepared'},
     { label: 'On the way' },
     { label: 'Delivered' },
     { label: 'Cancelled' }
@@ -40,7 +41,7 @@ const OrderManagement = () => {
           items: order.orderName,
           quantities: Array.isArray(order.orderQuantity) ? order.orderQuantity : [],
           total: parseFloat(order.totalPrice),
-          status: 'On the way',
+          status:order.status,
           customerName: order.customerName,
           address: order.customerAddress,
           image: order.orderName.includes("Pizza") ? Pizza : Burger,
@@ -49,6 +50,19 @@ const OrderManagement = () => {
       })
       .catch((error) => console.error("Failed to fetch orders", error));
   }, []);
+
+
+  const handleDelete = async (orderId) => {
+    try {
+      await axios.delete(`http://localhost:8081/orderDelete/${orderId}`);
+      setOrders(prev => prev.filter(order => order.id !== orderId));
+      alert("Order deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete order:", error);
+      alert("Failed to delete the order. Please try again.");
+    }
+  };
+  
 
   const filteredOrders = statusFilter === "All"
     ? orders
@@ -69,12 +83,13 @@ const OrderManagement = () => {
 
   const actionBody = (rowData) => (
     <div className="flex gap-2">
-      <Button
-        icon="pi pi-search"
-        className="p-button-rounded p-button-info"
-        onClick={() => showOrderDetails(rowData)}
-        tooltip="View Details"
-      />
+    <Button 
+      icon="pi pi-eye"
+      className="p-button-rounded p-button-outlined p-button-info"
+      style={{ borderWidth: '2px' }}
+      onClick={() => showOrderDetails(rowData)}
+      tooltip="View Details"
+    />
       {rowData.status === 'Pending' && (
         <Button
           icon="pi pi-times"
@@ -83,13 +98,24 @@ const OrderManagement = () => {
           tooltip="Cancel Order"
         />
       )}
+
+      {rowData.status.toLowerCase() === 'order pending' && (
+        <Button
+          icon="pi pi-trash"
+          className="p-button-rounded p-button-outlined p-button-danger"
+          style={{ borderWidth: '2px' }}
+          onClick={() => handleDelete(rowData.id)}
+          tooltip="Delete Order"
+        />
+      )}
     </div>
   );
 
   const getStatusSeverity = (status) => {
     switch (status.toLowerCase()) {
-      case 'pending': return 'warning';
+      case 'order pending': return 'warning';
       case 'preparing': return 'info';
+      case 'prepared': return 'secondary';
       case 'on the way': return 'secondary';
       case 'delivered': return 'success';
       case 'cancelled': return 'danger';
@@ -105,7 +131,7 @@ const OrderManagement = () => {
     <div className="p-5">
       {/* Status Filter Navbar */}
       <div className="flex gap-2 mb-4">
-        {["All", "Pending", "Preparing", "On the way", "Delivered", "Cancelled"].map((status) => (
+        {[ "Order Pending", "Preparing","Prepared", "On the way", "Delivered", "Cancelled", "All"].map((status) => (
           <Button
             key={status}
             label={status}

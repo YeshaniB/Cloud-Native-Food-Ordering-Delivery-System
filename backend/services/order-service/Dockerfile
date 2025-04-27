@@ -5,7 +5,8 @@
 
 FROM openjdk:17-jdk-oracle
 
-RUN addgroup -S app && adduser -S app -G app
+#RUN addgroup -S app && adduser -S app -G app
+RUN groupadd -r app && useradd -r -g app app
 
 USER app
 
