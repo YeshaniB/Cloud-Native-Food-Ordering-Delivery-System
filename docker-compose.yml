@@ -1,0 +1,76 @@
+#version: '3.8'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    volumes:
+      - mongo_data:/data/db
+
+
+  postgres:
+    image: postgres:14
+    container_name: postgres_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin1234
+      POSTGRES_DB: restaurant_menu
+    networks:
+      - backend
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+
+  order_service:
+    build: ./services/order_service
+    container_name: order_service
+    ports:
+      - "8082:8081"
+    environment:
+      - MONGO_URI=mongodb+srv://Pasan:Pasan%402003@ordermanagement.h6iv1p5.mongodb.net/orderDetails
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+  delivery_service:
+    build: ./services/delivery_service
+    container_name: delivery_service
+    ports:
+      - "8083:8081"
+    environment:
+      - MONGO_URI=mongodb+srv://malmi:Malmi%40123@cluster0.55k6k1s.mongodb.net/delivery_service
+    depends_on:
+      - mongodb
+    networks:
+      - backend
+
+
+  restaurant_service:
+    build: backend/services/restaurant-service  # Update with your correct path
+    container_name: restaurant_service
+    ports:
+      - "8084:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/restaurant_menu
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin1234
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  postgres_data:
