@@ -1,7 +1,9 @@
 package com.example.restaurantservice.controller;
 
+import com.example.restaurantservice.dto.OrderDto;
 import com.example.restaurantservice.model.MenuItem;
 import com.example.restaurantservice.repository.MenuItemRepository;
+import com.example.restaurantservice.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,9 +26,14 @@ public class MenuItemController {
 
     @Autowired
     private MenuItemRepository repository;
+    private final OrderService orderService;
+
+    public MenuItemController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
 
-@PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public MenuItem addMenuItem(@RequestPart("item") String itemString,
                             @RequestPart("image") MultipartFile file) throws IOException {
     // Convert the String to MenuItem object
@@ -91,5 +98,10 @@ public MenuItem addMenuItem(@RequestPart("item") String itemString,
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
+    }
+
+    @GetMapping("/pendingOrders")
+    public List<OrderDto> getPendingOrders() {
+        return orderService.getPendingOrders();
     }
 }
