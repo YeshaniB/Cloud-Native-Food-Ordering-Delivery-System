@@ -67,6 +67,19 @@ services:
     networks:
       - backend
 
+  user_management:
+    build: backend/services/user_management  # Update with your correct path
+    container_name: user_management
+    ports:
+      - "8085:8081"
+    environment:
+      spring:datasource:url=jdbc:postgresql://aws-0-ap-southeast-1:pooler:supabase:com:6543/postgres?user=postgres:fecccwrsroctwkygrbct&password=user!123:
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+
 networks:
   backend:
     driver: bridge
