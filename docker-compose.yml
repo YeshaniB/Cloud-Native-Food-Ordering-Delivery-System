@@ -1,4 +1,4 @@
-version: '3.8'
+#version: '3.8'
 
 services:
   mongodb:
@@ -11,7 +11,7 @@ services:
     volumes:
       - mongo_data:/data/db
 
-  order_service:
+  order-service:
     build: backend/services/order-service
     container_name: order-service
     ports:
