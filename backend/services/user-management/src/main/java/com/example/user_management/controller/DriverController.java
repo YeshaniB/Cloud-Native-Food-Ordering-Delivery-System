@@ -18,4 +18,10 @@ public class DriverController {
     public List<DriverFullDetailsDto> getAllDrivers() {
         return driverService.getAllDriverDetails();
     }
+
+
+    @GetMapping("/activated")
+    public List<DriverFullDetailsDto> getAllActivatedDrivers() {   // ✅ NEW METHOD
+        return driverService.getAllActivatedDriverDetails();
+    }
 }

@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface DriverService {
     List<DriverFullDetailsDto> getAllDriverDetails();
+    List<DriverFullDetailsDto> getAllActivatedDriverDetails();
 }
