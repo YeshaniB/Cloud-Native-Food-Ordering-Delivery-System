@@ -17,6 +17,9 @@ import UserDeliveryTracker  from "./pages/UserDeliveryTracker";
 import CustomerTrackingPage from "./pages/CustomerTrackingPage";
 import AdminTrackingPage  from "./pages/AdminTrackingPage";
 import Dashboard from "./pages/DashboardPage";
+import DriverUserDashboard  from "./pages/DriverUserDashboard";
+import Home from './pages/Home';
+//import DriverDashNew from "./pages/DriverDashNew";
 
 function App() {
   return (
@@ -31,7 +34,9 @@ function App() {
               <Route path="/user-delivery-tracker" element={<UserDeliveryTracker />} />
                <Route path="/admin-tracking" element={<AdminTrackingPage />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-
+          <Route path="/driver-user-dashboard" element={<DriverUserDashboard />} />
+          <Route  path="/Home" element={<Home />} />
+          {/*<Route path="/driverDashNew" element={<DriverDashNew />} />*/}
       </Routes>
       </BrowserRouter>
   );
