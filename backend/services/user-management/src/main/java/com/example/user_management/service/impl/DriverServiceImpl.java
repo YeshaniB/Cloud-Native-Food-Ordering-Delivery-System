@@ -36,12 +36,15 @@ public class DriverServiceImpl implements DriverService {
                 dto.setContact(driverUser.getContact());
                 dto.setEmail(driverUser.getEmail());
                 dto.setActivated(driverUser.isActivated());
+                dto.setVehicleType(driverDetails.getVehicleType());
+
 
                 dto.setDriverName(driverDetails.getDriverName());
                 dto.setDriverNIC(driverDetails.getDriverNIC());
                 dto.setLicenseNumber(driverDetails.getLicenseNumber());
                 dto.setVehicleNumber(driverDetails.getVehicleNumber());
                 dto.setLicenseCopyUrl(driverDetails.getLicenseCopyUrl());
+
 
                 result.add(dto);
             }
