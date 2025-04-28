@@ -23,16 +23,8 @@ function Header() {
                             <li onClick={() => navigate('/')}>
                                 <a>Home</a>
                             </li>
-                            <li>
+                            <li onClick={() => navigate('/')}>
                                 <a className="dropbtn">Place Order</a>
-                                <ul className="dropdown">
-                                    <li onClick={() => navigate('/commercial')}>
-                                        <a>Wholesale Ordering</a>
-                                    </li>
-                                    <li onClick={() => navigate('/Online')}>
-                                        <a>Online Ordering</a>
-                                    </li>
-                                </ul>
                             </li>
                             <li>
                                 <a>Sign Up</a>
