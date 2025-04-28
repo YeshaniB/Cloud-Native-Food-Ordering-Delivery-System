@@ -1,5 +1,8 @@
 package com.example.delivery_service;
 
+import ch.qos.logback.core.pattern.Converter;
+import com.example.delivery_service.converter.StringToLocationConverter;
+import com.example.delivery_service.model.Location;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,4 +24,8 @@ public class DeliveryServiceApplication {
 		return builder.build();
 	}
 
+//	@Bean
+//	public Converter<String, Location> stringToLocationConverter() {
+//		return new StringToLocationConverter();
+//	}
 }

@@ -1,28 +1,36 @@
 package com.example.delivery_service.controller;
 
 import com.example.delivery_service.model.Driver;
+import com.example.delivery_service.model.Location;
 import com.example.delivery_service.repository.DriverRepository;
+import com.example.delivery_service.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/drivers")
-public class
-DriverController {
+public class DriverController {
 
     private final DriverRepository driverRepository;
+    private final DriverService driverService; // Declare driverService
 
     @Autowired
-    public DriverController(DriverRepository driverRepository) {
+    public DriverController(DriverRepository driverRepository, DriverService driverService) {
         this.driverRepository = driverRepository;
+        this.driverService = driverService; // Initialize driverService
     }
 
     // Get all drivers
     @GetMapping
     public List<Driver> getAllDrivers() {
-        return driverRepository.findAll();
+        try {
+            return driverRepository.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while fetching drivers: " + e.getMessage());
+        }
     }
 
     // Get driver by ID
@@ -33,9 +41,13 @@ DriverController {
     }
 
     // Create new driver
+//    @PostMapping
+//    public Driver createDriver(@RequestBody Driver driver) {
+//        return driverRepository.save(driver);
+//    }
     @PostMapping
     public Driver createDriver(@RequestBody Driver driver) {
-        return driverRepository.save(driver);
+        return driverService.registerDriver(driver);
     }
 
     // Update driver details
@@ -66,5 +78,57 @@ DriverController {
     public Driver getAvailableDriver() {
         return driverRepository.findFirstByStatus("Available")
                 .orElseThrow(() -> new RuntimeException("No available drivers."));
+    }
+
+    // Update status and location
+    @PutMapping("/updateStatusAndLocation/{id}")
+    public Driver updateStatusAndLocation(@PathVariable String id, @RequestBody Driver updatedDriver) {
+        try {
+            if (updatedDriver.getStatus() == null || updatedDriver.getLocation() == null) {
+                throw new IllegalArgumentException("Status or Location cannot be null");
+            }
+
+            String status = updatedDriver.getStatus();
+            double lat = updatedDriver.getLocation().getLat();
+            double lng = updatedDriver.getLocation().getLng();
+
+            return driverService.updateDriverStatus(id, status, lat, lng);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid input: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while updating the driver: " + e.getMessage());
+        }
+    }
+//    @PutMapping("/updateStatusAndLocation/{id}")
+//    public Driver updateStatusAndLocation(@PathVariable String id, @RequestBody Driver updatedDriver) {
+//        try {
+//            if (updatedDriver.getStatus() == null || updatedDriver.getLocation() == null) {
+//                throw new IllegalArgumentException("Status or Location cannot be null");
+//            }
+//            return driverService.updateDriverStatus(id, status,lat,lng);
+//        } catch (IllegalArgumentException e) {
+//            throw new RuntimeException("Invalid input: " + e.getMessage());
+//        } catch (Exception e) {
+//            throw new RuntimeException("An error occurred while updating the driver: " + e.getMessage());
+//        }
+//    }
+
+    @PutMapping("/updateLocation")
+    public ResponseEntity<String> updateLocation(@RequestParam String driverId, @RequestParam double lat, @RequestParam double lng) {
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Driver not found"));
+
+        // Initialize location if null
+        if (driver.getLocation() == null) {
+            driver.setLocation(new Location());
+        }
+
+        // Now, update latitude and longitude
+        driver.getLocation().setLat(lat);
+        driver.getLocation().setLng(lng);
+
+        driverRepository.save(driver);
+
+        return ResponseEntity.ok("Location updated successfully");
     }
 }
