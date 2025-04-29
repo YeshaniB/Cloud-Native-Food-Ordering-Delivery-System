@@ -335,6 +335,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
@@ -350,16 +351,19 @@ import { Tag } from 'primereact/tag';
 
 import Burger from './Images/Burger.jpg';
 import Pizza from './Images/Pizza.jpg';
+import LavaCacke from './Images/Lava Cake.jpg'
 
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 
+
+
 // Define menu and restaurant name mappings
 const restaurantMenus = {
   res1: [
-    { id: 1, name: 'Burger', price: 500.0, image: Burger },
-    { id: 2, name: 'Pizza', price: 1100.0, image: Pizza },
-    { id: 3, name: 'Burger', price: 500.0, image: Burger },
+    { id: 1, name: 'Chilli Chicken Burger', price: 500.0, image: Burger },
+    { id: 2, name: 'Chicken + Spicy Pizza', price: 1100.0, image: Pizza },
+    { id: 3, name: 'Lava Cake', price: 500.0, image: LavaCacke },
   ],
   res2: [
     { id: 4, name: 'Pasta', price: 650.0, image: Burger },
@@ -386,6 +390,12 @@ const OrderFood = () => {
   const toast = useRef(null);
   const [customerName, setCustomerName] = useState('John Doe');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [paymentMethod, setPaymentMethod] = useState('');
+
+
+  const navigate = useNavigate();
 
   const [restaurantItems, setRestaurantItems] = useState([]);
 
@@ -404,7 +414,28 @@ const OrderFood = () => {
 
   const [location, setLocation] = useState(null);
 
-  const statusOptions = ['Select Option','Current Location', 'Enter Location'];
+  const statusOptions = ['Select Option','Current Location'];
+
+  const handlePriceCheckout = () => {
+    if (paymentMethod === 'payOnline') {
+      // Redirect to payment gateway or handle payment
+      toast.current.show({ severity: 'info', summary: 'Redirecting to payment gateway' });
+    } else {
+      toast.current.show({ severity: 'success', summary: 'Order placed successfully' });
+    }
+  };
+
+  const cartPayFooter = (
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button
+        label={paymentMethod === 'payOnline' ? 'Pay Now' : 'Checkout'}
+        icon="pi pi-check"
+        className="p-button-success"
+        onClick={handlePriceCheckout}
+        disabled={!customerName || !address || !paymentMethod}
+      />
+    </div>
+  );
 
 
 
@@ -424,7 +455,7 @@ const OrderFood = () => {
 useEffect(() => {
   let watchId;
 
-  if (status !== "Select Option" && status !== "Enter Location") {
+  if (status !== "Select Option") {
     if (navigator.geolocation) {
       watchId = navigator.geolocation.watchPosition(
         (position) => {
@@ -564,12 +595,23 @@ useEffect(() => {
 
   const cartFooter = (
     <div className="p-d-flex p-jc-end">
-      <Button label="Close" icon="pi pi-times" className="p-button-text" onClick={() => setOpenCart(false)} />
+      <Button
+        label="Close"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={() => setOpenCart(false)}
+      />
       {cart.length > 0 && (
-        <Button label="Checkout" icon="pi pi-check" className="p-button-success" onClick={handleCheckout} />
+        <Button
+        label={paymentMethod === 'payOnline' ? 'Pay Now' : 'Checkout'}
+        icon="pi pi-check"
+        className="p-button-success"
+        onClick={paymentMethod === 'payOnline' ? () => navigate('/checkout') : handleCheckout}
+      />
       )}
     </div>
   );
+  
 
   return (
     <div className="p-p-4">
@@ -582,81 +624,103 @@ useEffect(() => {
           </div>
         }
         right={
-          <Button
-            icon="pi pi-shopping-cart"
-            className="p-button-rounded p-button-info"
-            onClick={() => setOpenCart(true)}
-          >
-            <Badge value={cart.length} severity="danger" />
-          </Button>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <InputText
+              placeholder="Search food..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ width: '200px' }}
+              className="p-inputtext-sm"
+            />
+            <Button
+              label="Order Details"
+              icon="pi pi-list"
+              className="p-button-rounded p-button-success"
+              onClick={() => navigate('/orderdetails')}
+            />
+            <Button
+              icon="pi pi-shopping-cart"
+              className="p-button-rounded p-button-info"
+              onClick={() => setOpenCart(true)}
+            >
+              <Badge value={cart.length} severity="danger" />
+            </Button>
+          </div>
         }
       />
 
-      <div style={{ display: 'flex', overflowX: 'auto', gap: '150px', paddingTop: '50px', marginLeft: "150px" }}>
-        {menuItems.map((item) => (
-          <div key={item.id} style={{ flex: '0 0 auto', width: '300px' }}>
-            <div
-              className="p-card"
-              style={{
-                borderRadius: '20px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                transition: 'transform 0.2s ease',
-                backgroundColor: '#ffffff',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-            >
-              <Image
-                src={item.image}
-                alt={item.name}
-                imageStyle={{
-                  width: '100%',
-                  height: '200px',
-                  objectFit: 'cover',
+      <div style={{ display: 'flex', overflowX: 'auto', gap: '150px', paddingTop: '50px', marginLeft: '150px' }}>
+        {menuItems
+          .filter((item) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+          .map((item) => (
+            <div key={item.id} style={{ flex: '0 0 auto', width: '300px' }}>
+              <div
+                className="p-card"
+                style={{
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.2s ease',
+                  backgroundColor: '#ffffff',
+                  cursor: 'pointer'
                 }}
-                preview
-              />
-              <div className="p-p-3">
-                <h3 style={{ marginBottom: '0.5rem', color: '#2c3e50', fontWeight: '600', marginLeft: '10px' }}>{item.name}</h3>
-                <p style={{ margin: '0 0 0.75rem', color: '#7f8c8d', fontSize: '15px', marginLeft: '10px' }}>
-                  A delicious choice that will satisfy your cravings.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 'bold', color: '#2980b9', fontSize: '16px', marginLeft: '10px' }}>
-                    Rs. {item.price.toFixed(2)}
-                  </span>
-                  <Button
-                    label="Add to Cart"
-                    icon="pi pi-shopping-cart"
-                    className="p-button-sm custom-cart-button"
-                    style={{
-                      backgroundColor: '#3498db',
-                      borderColor: '#3498db',
-                      color: 'white',
-                      borderRadius: '20px',
-                      marginBottom: '10px',
-                      marginRight: '10px',
-                      transition: 'all 0.3s ease',
-                    }}
-                    onClick={() => addToCart(item)}
-                  />
-                  <style>
-                    {`
-                      .custom-cart-button:hover {
-                        background-color: #2980b9 !important;
-                        border-color: #2980b9 !important;
-                        transform: scale(1.05);
-                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                      }
-                    `}
-                  </style>
+                onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.02)')}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  imageStyle={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                  preview
+                />
+                <div className="p-p-3">
+                  <h3 style={{ marginBottom: '0.5rem', color: '#2c3e50', fontWeight: '600', marginLeft: '10px' }}>
+                    {item.name}
+                  </h3>
+                  <p style={{ margin: '0 0 0.75rem', color: '#7f8c8d', fontSize: '15px', marginLeft: '10px' }}>
+                    A delicious choice that will satisfy your cravings.
+                  </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span
+                      style={{
+                        fontWeight: 'bold',
+                        color: '#2980b9',
+                        fontSize: '16px',
+                        marginLeft: '10px'
+                      }}
+                    >
+                      Rs. {item.price.toFixed(2)}
+                    </span>
+                    <Button
+                      label="Add to Cart"
+                      icon="pi pi-shopping-cart"
+                      className="p-button-sm custom-cart-button"
+                      style={{
+                        backgroundColor: '#3498db',
+                        borderColor: '#3498db',
+                        color: 'white',
+                        borderRadius: '20px',
+                        marginBottom: '10px',
+                        marginRight: '10px',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={() => addToCart(item)}
+                    />
+                    <style>
+                      {`
+                        .custom-cart-button:hover {
+                          background-color: #2980b9 !important;
+                          border-color: #2980b9 !important;
+                          transform: scale(1.05);
+                          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                        }
+                      `}
+                    </style>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <Dialog
@@ -674,9 +738,10 @@ useEffect(() => {
               <div key={item.id} className="p-d-flex p-ai-center p-mb-3">
                 <Image src={item.image} alt={item.name} width="60" preview className="p-mr-2" />
                 <div className="p-d-flex p-jc-between p-ai-center" style={{ width: '100%' }}>
-                <span>
-              {item.name} - Rs. {item.price.toFixed(2)} x {item.quantity} = Rs. {(item.price * item.quantity).toFixed(2)}
-            </span>
+                  <span>
+                    {item.name} - Rs. {item.price.toFixed(2)} x {item.quantity} = Rs.{' '}
+                    {(item.price * item.quantity).toFixed(2)}
+                  </span>
                   <div>
                     <Button
                       icon="pi pi-minus"
@@ -703,57 +768,69 @@ useEffect(() => {
             <h4>Total: Rs. {getTotalPrice().toFixed(2)}</h4>
             <div className="p-field p-mt-3">
               <label htmlFor="customerName">Customer Name</label>
+              <br />
               <InputText
                 id="customerName"
-                value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 className="p-inputtext-sm"
-                fullWidth
+                style={{ width: '550px' }}
               />
             </div>
-            <div className="p-field">
-            <div className="p-field">
+
+            <div className="p-field" style={{ marginTop: '20px' }}>
               <label htmlFor="customerAddress">Customer Address</label>
-              <div className="p-d-flex p-ai-center" style={{ flexDirection: 'column', gap: '1rem' }}>
+              <div className="p-d-flex p-ai-center" style={{ flexDirection: 'column', gap: '20px' }}>
                 <div style={{ display: 'flex', width: '100%' }}>
                   <InputText
                     id="customerAddress"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="p-inputtext-sm"
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, width: '550px' }}
                     readOnly={status === 'Current Location'}
                   />
-                <div>
-                <Dropdown
-                  value={status}
-                  options={statusOptions}
-                  onChange={(e) => {
-                    setStatus(e.value);
-                    setShowMap(e.value === 'Current Location'); // 👈 show map only for 'Current Location'
-                  }}
-                  placeholder="Select Status"
-                />
-              </div>         
+                  <div>
+                    <Dropdown
+                      value={status}
+                      options={statusOptions}
+                      onChange={(e) => {
+                        setStatus(e.value);
+                        setShowMap(e.value === 'Current Location');
+                      }}
+                      placeholder="Select Status"
+                      style={{ marginLeft: '148px' }}
+                    />
+                  </div>
+                </div>
 
-             </div>
-
-  {/* Conditionally render the map only when showMap is true */}
-  {showMap && (
-  <div
-    id="map"
-    ref={mapRef}
-    style={{ height: '400px', width: '100%', marginTop: '1rem' }}
-  ></div>
-)}
-</div>
-
+                {showMap && (
+                  <div
+                    id="map"
+                    ref={mapRef}
+                    style={{ height: '400px', width: '100%', marginTop: '1rem' }}
+                  ></div>
+                )}
+              </div>
             </div>
-      </div>
+
+            <div className="p-field" style={{ marginTop: '20px' }}>
+              <label htmlFor="paymentMethod">Payment Method</label>
+              <Dropdown
+                id="paymentMethod"
+                value={paymentMethod}
+                options={[
+                  { label: 'On Delivery', value: 'onDelivery' },
+                  { label: 'Pay Online', value: 'payOnline' }
+                ]}
+                onChange={(e) => setPaymentMethod(e.value)}
+                placeholder="Select Payment Method"
+                style={{ width: '300px', marginLeft:'125px'}}
+              />
+            </div>
           </div>
         )}
       </Dialog>
-      <Card></Card>
+      <Card />
     </div>
   );
 };

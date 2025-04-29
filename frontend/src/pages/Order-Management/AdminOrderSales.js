@@ -20,6 +20,7 @@ const AdminSalesReports = () => {
       });
   }, []);
 
+  const totalIncome = reportData.totalPrice - reportData.decreasedTotal;
   const salesData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
@@ -58,9 +59,31 @@ const AdminSalesReports = () => {
   };
 
   const insights = [
-    { label: 'Orders Count', value: reportData.orderCount },
-    { label: 'Total Income', value: `Rs. ${reportData.totalPrice.toLocaleString()}` },
-    { label: 'Restaurant Income', value: `Rs. ${reportData.decreasedTotal.toLocaleString()}` }, // Added decreasedTotal
+    { 
+      label: 'Orders Count', 
+      value: reportData.orderCount,
+      labelColor: '#0F172A',  // Label color
+      valueColor: '#FF5733'   // Value color
+    },
+    { 
+      label: 'Total Income', 
+      value: `Rs. ${reportData.totalPrice.toLocaleString()}`,
+      labelColor: '#0F172A',  // Label color
+      valueColor: '#2196F3'   // Value color
+    },
+    { 
+      label: 'Restaurant Income', 
+      value: `Rs. ${reportData.decreasedTotal.toLocaleString()}`, 
+      labelColor: '#0F172A',  // Label color
+      valueColor: '#FF9800'   // Value color
+    },
+    { 
+      label: 'Total Income', 
+      value: `Rs. ${totalIncome.toLocaleString()}`, 
+      labelColor: '#0F172A',  // Label color
+      valueColor: '#4CAF50',
+      backColor: ''   // Value color
+    }
   ];
 
   return (
@@ -76,13 +99,13 @@ const AdminSalesReports = () => {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '30px' }}>
-        {insights.map((item, i) => (
-          <div key={i} style={{ backgroundColor: '#ffffff', borderRadius: '12px', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', textAlign: 'center' }}>
-            <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>{item.label}</p>
-            <p style={{ color: '#0f172a', fontSize: '22px', fontWeight: 'bold' }}>{item.value}</p>
-          </div>
-        ))}
+    {insights.map((item, i) => (
+      <div key={i} style={{ backgroundColor: '#ffffff', borderRadius: '12px', padding: '20px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', textAlign: 'center' }}>
+        <p style={{ color: item.labelColor || '#64748b', fontSize: '19px', fontWeight: 'bold' }}>{item.label}</p>
+        <p style={{ color: item.valueColor || '#0f172a', fontSize: '22px', fontWeight: 'bold' }}>{item.value}</p>
       </div>
+    ))}
+  </div>
 
       <div style={{ backgroundColor: '#ffffff', borderRadius: '12px', padding: '30px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)' }}>
         <h3 style={{ color: '#1e293b', marginBottom: '20px' }}>📈 Monthly Revenue Overview</h3>

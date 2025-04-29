@@ -13,7 +13,7 @@ import Burger from './Images/Burger.jpg';
 import Pizza from './Images/Pizza.jpg';
 
 const getStatusIndex = (status) => {
-  const stages = ['Pending', 'Preparing', 'On the way', 'Delivered', 'Cancelled'];
+  const stages = ['Order Pending', 'Preparing', 'On the way', 'Delivered'];
   return stages.findIndex(s => s.toLowerCase() === status.toLowerCase());
 };
 
@@ -131,7 +131,7 @@ const OrderManagement = () => {
     <div className="p-5">
       {/* Status Filter Navbar */}
       <div className="flex gap-2 mb-4">
-        {[ "Order Pending", "Preparing","Prepared", "On the way", "Delivered", "Cancelled", "All"].map((status) => (
+        {[ "Order Pending", "Preparing","Prepared", "On the way", "Delivered", "All"].map((status) => (
           <Button
             key={status}
             label={status}

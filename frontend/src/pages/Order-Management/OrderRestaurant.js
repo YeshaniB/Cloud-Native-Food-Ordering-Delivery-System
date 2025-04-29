@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
@@ -35,22 +35,38 @@ const restaurants = [
 
 const RestaurantList = () => {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleClick = (id) => {
     navigate(`/foodDetails/${id}`);
   };
 
+  // Filter restaurants by search query
+  const filteredRestaurants = restaurants.filter((restaurant) =>
+    restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-mt-6 p-px-3 md:p-px-6">
       <div className="text-center mb-5">
         <h2 className="text-4xl font-bold text-primary">
-          🍔 Select a Restaurant
+          Available Restaurants
         </h2>
-        <p className="text-gray-500">Explore a variety of cuisines</p>
+      </div>
+
+      {/* Search input */}
+      <div className="flex justify-content-center mb-5">
+        <input
+          type="text"
+          placeholder="Search restaurants..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-inputtext p-component p-3 border-round w-full md:w-6"
+        />
       </div>
 
       <div className="flex flex-column align-items-center gap-5">
-        {restaurants.map((restaurant) => (
+        {filteredRestaurants.map((restaurant) => (
           <div key={restaurant.id} style={{ maxWidth: '900px', width: '100%' }}>
             <Card className="shadow-3 border-round-3xl custom-hover">
               <div className="flex flex-column md:flex-row align-items-center">
@@ -95,6 +111,7 @@ const RestaurantList = () => {
 };
 
 export default RestaurantList;
+
 
 
 
