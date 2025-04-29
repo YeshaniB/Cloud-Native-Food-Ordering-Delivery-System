@@ -1,11 +1,10 @@
 package com.example.orderservice.Controllers;
-
-import com.example.orderservice.DTO.RestaurantDTO;
+import com.example.orderservice.DTO.MenuItemDTO;
 import com.example.orderservice.Interfaces.StatusCountProjection;
 import com.example.orderservice.Model.OrderDetails;
 import com.example.orderservice.Repository.OrderDetailsRepo;
 import com.example.orderservice.DTO.OrderSummaryResponse;
-import com.example.orderservice.Services.RestaurantClinet;
+import com.example.orderservice.Services.RestaurantClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,24 +12,27 @@ import org.springframework.web.multipart.MultipartFile;
 import org.bson.types.Binary;
 
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
 
 @RestController
+//@RequestMapping("/api/order")
 public class OrderUserController {
 
     @Autowired
     private OrderDetailsRepo orderDetailsRepo;
-    private RestaurantClinet restaurantDTO;
 
-    @GetMapping
-    public List<RestaurantClinet> getAll() {
-        return
-                restaurantDTO.findAll;
+    @Autowired
+    private RestaurantClient restaurantClient;
+    // <-- Make sure you have this @Autowired
+
+    @GetMapping("/api/menu")
+    public List<MenuItemDTO> getRestaurants() {
+        return restaurantClient.getResData();  // <-- Call properly
     }
+
 
     @PostMapping("/addOrderDetails")
     public ResponseEntity<String> addOrder(
@@ -86,23 +88,6 @@ public class OrderUserController {
         return ResponseEntity.ok(preparedOrders);
     }
 
-//    @GetMapping("/getTotalPrice")
-//    public double getTotalPrice() {
-//
-//        List<OrderDetails> orders = orderDetailsRepo.findAll(); // Retrieve all orders
-//        double total = 0;
-//
-//        for (OrderDetails order : orders) {
-//            try {
-//                total += Double.parseDouble(order.getTotalPrice());
-//            } catch (NumberFormatException e) {
-//                // Handle the case where totalPrice is not a valid number
-//                System.err.println("Invalid total price for order " + order.getOrderId());
-//            }
-//        }
-//        return total;
-//
-//    }
 
     @GetMapping("/getTotalPrice")
     public OrderSummaryResponse getTotalPriceAndCount() {
@@ -123,7 +108,6 @@ public class OrderUserController {
 
         int orderCount = orders.size();
 
-        // Return the response with all the necessary values
         return new OrderSummaryResponse(total, orderCount, decreasedTotal);
     }
 
@@ -133,8 +117,7 @@ public class OrderUserController {
     public Map<String, Integer> getOrderStatusCounts() {
         List<StatusCountProjection> statusCounts = orderDetailsRepo.countOrdersByStatus();
 
-        // Initialize all statuses to 0
-        List<String> allStatuses = Arrays.asList("Pending", "Preparing", "Prepared", "On the way", "Delivered", "Cancelled");
+        List<String> allStatuses = Arrays.asList("Order Pending", "Preparing", "Prepared", "On the way", "Delivered");
         Map<String, Integer> result = new LinkedHashMap<>();
         allStatuses.forEach(status -> result.put(status, 0));
 
@@ -153,6 +136,39 @@ public class OrderUserController {
     }
 
 
+    @PatchMapping("/updateDetails/{orderId}")
+    public ResponseEntity<?> updateCustomerDetails(
+            @PathVariable String orderId,
+            @RequestBody OrderDetails updatedOrderDetails) {
+
+        Optional<OrderDetails> optionalOrder = orderDetailsRepo.findById(orderId);
+
+        if (optionalOrder.isPresent()) {
+            OrderDetails existingOrder = optionalOrder.get();
+
+            // Only update fields that are present in the request
+            if (updatedOrderDetails.getCustomerName() != null && !updatedOrderDetails.getCustomerName().isEmpty()) {
+                existingOrder.setCustomerName(updatedOrderDetails.getCustomerName());
+            }
+
+            if (updatedOrderDetails.getCustomerAddress() != null && !updatedOrderDetails.getCustomerAddress().isEmpty()) {
+                existingOrder.setCustomerAddress(updatedOrderDetails.getCustomerAddress());
+            }
+
+            // Save the updated order
+            OrderDetails savedOrder = orderDetailsRepo.save(existingOrder);
+
+            return ResponseEntity.ok(savedOrder);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
+
+
+
 
     @DeleteMapping("/orderDelete/{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable String orderId) {
@@ -164,14 +180,6 @@ public class OrderUserController {
             return ResponseEntity.notFound().build();
         }
     }
-
-//    @GetMapping
-//    public List<RestaurantClinet> getAll() {
-//        return restaurantDTO();
-//    }
-
-
-
 
 
 
@@ -195,8 +203,6 @@ public class OrderUserController {
         int next = max + 1;
         return String.format("ORD%05d", next);
     }
-
-
 
 }
 

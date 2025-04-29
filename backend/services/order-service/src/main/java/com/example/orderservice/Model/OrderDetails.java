@@ -24,6 +24,7 @@ public class OrderDetails {
     private String orderDate;
     private String customerName;
     private String customerAddress;
+    private String location;
 //    private String contactNo;
     private List<String> orderName;
     private List<String> Quantity;

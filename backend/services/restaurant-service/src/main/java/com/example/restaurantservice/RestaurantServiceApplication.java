@@ -1,25 +1,23 @@
-package com.example.orderservice;
+package com.example.restaurantservice;
 
+import com.example.restaurantservice.model.MenuItem;
+import com.example.restaurantservice.repository.MenuItemRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "com.example.orderservice.Repository")
-public class OrderServiceApplication {
+public class RestaurantServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OrderServiceApplication.class, args);
+		SpringApplication.run(RestaurantServiceApplication.class, args);
 	}
 
 	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
 	}
 
 }
-
-
