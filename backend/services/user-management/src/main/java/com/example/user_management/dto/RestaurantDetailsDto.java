@@ -15,5 +15,6 @@ public class RestaurantDetailsDto {
     private String restaurantEmail;
     private String logoUrl;
     private String description;
+    private Long userId;
 
 }
