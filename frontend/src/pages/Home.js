@@ -15,9 +15,6 @@ import restaurant3 from '../images/burgerking.png';
 import restaurant4 from '../images/tacobell.png';
 import section1img from '../images/onlinebg.jpg';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebookF, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
-
 import '../styles/Home.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';

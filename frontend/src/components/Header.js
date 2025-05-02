@@ -29,9 +29,13 @@ function Header() {
                             <li>
                                 <a>Sign Up</a>
                             </li>
-                            <li>
+                            <li onClick={() => navigate('/driver-user-dashboard')}>
                                 <a>Login</a>
                             </li>
+                            <li onClick={() => navigate('/dashboard')}>
+                                <a>Admin</a>
+                            </li>
+
                             <li onClick={() => navigate('/profile')}>
                                 <FaUserCircle className="profile-icon" />
                             </li>
