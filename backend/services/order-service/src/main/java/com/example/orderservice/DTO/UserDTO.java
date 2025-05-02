@@ -1,9 +1,13 @@
-package com.example.user_management.dto;
+package com.example.orderservice.DTO;
 
 import lombok.Data;
+import org.apache.catalina.User;
 
 @Data
-public class RestaurantDetailsDto {
+public class UserDTO {
+    private Long id;
+    private Long userId;
+
     private String restaurantName;
     private String restaurantLocation;
     private String ownerName;
@@ -13,8 +17,7 @@ public class RestaurantDetailsDto {
     private String ownerContact;
     private String restaurantContact;
     private String restaurantEmail;
+
     private String logoUrl;
     private String description;
-    private Long userId;
-
 }

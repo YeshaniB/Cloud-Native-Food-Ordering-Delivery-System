@@ -7,6 +7,7 @@ import com.example.user_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/register")
 @RequiredArgsConstructor
@@ -34,6 +35,9 @@ public class RegistrationController {
             details.setOwnerContact(registrationRequest.getRestaurantDetails().getOwnerContact());
             details.setRestaurantContact(registrationRequest.getRestaurantDetails().getRestaurantContact());
             details.setRestaurantEmail(registrationRequest.getRestaurantDetails().getRestaurantEmail());
+            details.setLogoUrl(registrationRequest.getRestaurantDetails().getLogoUrl());
+            details.setDescription(registrationRequest.getRestaurantDetails().getDescription());
+
 
             restaurantDetailsRepository.save(details);
         }
@@ -47,6 +51,8 @@ public class RegistrationController {
             details.setLicenseNumber(registrationRequest.getDriverDetails().getLicenseNumber());
             details.setVehicleNumber(registrationRequest.getDriverDetails().getVehicleNumber());
             details.setLicenseCopyUrl(registrationRequest.getDriverDetails().getLicenseCopyUrl());
+            details.setVehicleType(registrationRequest.getDriverDetails().getVehicleType());
+
 
             driverDetailsRepository.save(details);
         }

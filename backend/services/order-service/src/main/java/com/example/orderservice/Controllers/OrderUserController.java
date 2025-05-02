@@ -1,10 +1,14 @@
 package com.example.orderservice.Controllers;
 import com.example.orderservice.DTO.MenuItemDTO;
+import com.example.orderservice.DTO.UserDTO;
 import com.example.orderservice.Interfaces.StatusCountProjection;
 import com.example.orderservice.Model.OrderDetails;
+import com.example.orderservice.Model.PayOrders;
 import com.example.orderservice.Repository.OrderDetailsRepo;
 import com.example.orderservice.DTO.OrderSummaryResponse;
+import com.example.orderservice.Repository.PayOrderDetailsRepo;
 import com.example.orderservice.Services.RestaurantClient;
+import com.example.orderservice.Services.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +32,20 @@ public class OrderUserController {
     private RestaurantClient restaurantClient;
     // <-- Make sure you have this @Autowired
 
+    @Autowired
+    private PayOrderDetailsRepo payOrderDetailsRepo;
+
+    @Autowired
+    private UserClient userClient;
+
     @GetMapping("/api/menu")
     public List<MenuItemDTO> getRestaurants() {
         return restaurantClient.getResData();  // <-- Call properly
+    }
+
+    @GetMapping("api/menu/restaurant/{restaurantId}")
+    public List<MenuItemDTO> getRestaurantsById(@PathVariable String restaurantId) {
+        return restaurantClient.ResById(restaurantId);
     }
 
 
@@ -40,7 +55,7 @@ public class OrderUserController {
             @RequestParam("orderDate") String orderDate,
             @RequestParam("customerName") String customerName,
             @RequestParam("customerAddress") String customerAddress,
-//            @RequestParam("contactNo") String contactNo,
+            @RequestParam("contactNo") Integer contactNo,
             @RequestParam("orderName") String[] orderNames,
             @RequestParam("quantity") String[] quantities,
             @RequestParam("price") String[] prices,
@@ -55,7 +70,7 @@ public class OrderUserController {
         order.setOrderDate(orderDate);
         order.setCustomerName(customerName);
         order.setCustomerAddress(customerAddress);
-//        order.setContactNo(contactNo);
+        order.setContactNo(contactNo);
         order.setOrderName(Arrays.asList(orderNames));
         order.setQuantity(Arrays.asList(quantities));
         order.setPrice(Arrays.asList(prices));
@@ -68,6 +83,65 @@ public class OrderUserController {
 
         return ResponseEntity.ok("Order with image saved successfully!");
     }
+
+
+
+
+
+
+//-------------Set Data to Payment Function----------------
+    @PostMapping("/payingOrders")
+    public ResponseEntity<String> PaymentOrder(
+//            @RequestParam("customerId") String customerId,
+            @RequestParam("orderDate") String orderDate,
+            @RequestParam("customerName") String customerName,
+            @RequestParam("customerAddress") String customerAddress,
+            @RequestParam("contactNo") Integer contactNo,
+            @RequestParam("orderName") String[] orderNames,
+            @RequestParam("quantity") String[] quantities,
+            @RequestParam("price") String[] prices,
+            @RequestParam("totalPrice") String totalPrice,
+            @RequestParam("image") MultipartFile imageFile
+    ) throws Exception {
+
+        PayOrders pay = new PayOrders();
+        String nextOrderId = generateNextOrderId();
+        pay.setOrderId(nextOrderId);
+//        pay.setCustomerId(customerId);
+        pay.setOrderDate(orderDate);
+        pay.setCustomerName(customerName);
+        pay.setCustomerAddress(customerAddress);
+        pay.setContactNo(contactNo);
+        pay.setOrderName(Arrays.asList(orderNames));
+        pay.setQuantity(Arrays.asList(quantities));
+        pay.setPrice(Arrays.asList(prices));
+        pay.setTotalPrice(totalPrice);
+
+        // Save image as Binary
+        pay.setImage(new Binary(imageFile.getBytes()));
+
+        payOrderDetailsRepo.save(pay);
+
+        return ResponseEntity.ok("Order with image saved successfully!");
+    }
+
+    @GetMapping("/getPaymentOrders")
+    public List<PayOrders> getPayOrders() {
+        return payOrderDetailsRepo.findAll();
+    }
+
+    @GetMapping("/getPayOrderById/{id}")
+    public PayOrders getPayOrderById(@PathVariable String id) {
+        return payOrderDetailsRepo.findById(id).orElse(null);
+    }
+
+    //------------------------------------------------------
+
+
+
+
+
+
 
 
     @GetMapping("/getOrderDetails/{id}")
@@ -203,6 +277,12 @@ public class OrderUserController {
         int next = max + 1;
         return String.format("ORD%05d", next);
     }
+
+    @GetMapping("/api/restaurants")
+    public List<UserDTO> getAllRestaurants() {
+        return userClient.getRestaurantData();
+    }
+
 
 }
 

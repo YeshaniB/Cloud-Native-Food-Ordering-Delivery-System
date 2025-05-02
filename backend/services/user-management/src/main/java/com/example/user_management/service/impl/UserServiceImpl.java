@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -72,6 +74,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsersByActivationStatus(boolean isActive) {
-        return userRepository.findByIsActivated(isActive);
+        return userRepository.findByIsActivated(isActive); // ✅ match again
     }
+
+    @Override
+    public Map<String, Long> getUserCounts() {
+        List<User> allUsers = getAllUsers();
+
+        long totalUsers = allUsers.size();
+        long totalCustomers = allUsers.stream().filter(user -> user.getUserType() == UserType.CUSTOMER).count();
+        long totalRestaurants = allUsers.stream().filter(user -> user.getUserType() == UserType.RESTAURANT).count();
+        long totalDrivers = allUsers.stream().filter(user -> user.getUserType() == UserType.DRIVER).count();
+
+        Map<String, Long> counts = new HashMap<>();
+        counts.put("totalUsers", totalUsers);
+        counts.put("totalCustomers", totalCustomers);
+        counts.put("totalRestaurants", totalRestaurants);
+        counts.put("totalDrivers", totalDrivers);
+
+        return counts;
+    }
+
+
+
 }
+
+

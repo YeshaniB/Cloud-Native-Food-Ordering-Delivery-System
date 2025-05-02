@@ -15,4 +15,5 @@ public class DriverFullDetailsDto {
     private String licenseNumber;
     private String vehicleNumber;
     private String licenseCopyUrl;
+    private String vehicleType;
 }

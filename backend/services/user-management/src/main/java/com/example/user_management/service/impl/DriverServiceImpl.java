@@ -36,6 +36,8 @@ public class DriverServiceImpl implements DriverService {
                 dto.setContact(driverUser.getContact());
                 dto.setEmail(driverUser.getEmail());
                 dto.setActivated(driverUser.isActivated());
+                dto.setVehicleType(driverDetails.getVehicleType());
+
 
                 dto.setDriverName(driverDetails.getDriverName());
                 dto.setDriverNIC(driverDetails.getDriverNIC());
@@ -43,10 +45,47 @@ public class DriverServiceImpl implements DriverService {
                 dto.setVehicleNumber(driverDetails.getVehicleNumber());
                 dto.setLicenseCopyUrl(driverDetails.getLicenseCopyUrl());
 
+
                 result.add(dto);
             }
         }
 
         return result;
     }
+
+    @Override
+    public List<DriverFullDetailsDto> getAllActivatedDriverDetails() {
+        List<User> drivers = userRepository.findByUserType(UserType.DRIVER)
+                .stream()
+                .filter(User::isActivated)  // ✅ Only activated drivers
+                .toList();
+
+        List<DriverFullDetailsDto> result = new ArrayList<>();
+
+        for (User driverUser : drivers) {
+            DriverDetails driverDetails = driverDetailsRepository.findByUserId(driverUser.getId())
+                    .orElse(null);
+
+            if (driverDetails != null) {
+                DriverFullDetailsDto dto = new DriverFullDetailsDto();
+                dto.setUserId(driverUser.getId());
+                dto.setName(driverUser.getName());
+                dto.setContact(driverUser.getContact());
+                dto.setEmail(driverUser.getEmail());
+                dto.setActivated(driverUser.isActivated());
+
+                dto.setDriverName(driverDetails.getDriverName());
+                dto.setDriverNIC(driverDetails.getDriverNIC());
+                dto.setLicenseNumber(driverDetails.getLicenseNumber());
+                dto.setVehicleNumber(driverDetails.getVehicleNumber());
+                dto.setLicenseCopyUrl(driverDetails.getLicenseCopyUrl());
+                dto.setVehicleType(driverDetails.getVehicleType());
+
+                result.add(dto);
+            }
+        }
+
+        return result;
+    }
+
 }

@@ -356,11 +356,14 @@ import LavaCacke from './Images/Lava Cake.jpg'
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
 
 
 // Define menu and restaurant name mappings
 const restaurantMenus = {
-  res1: [
+  12: [
     { id: 1, name: 'Chilli Chicken Burger', price: 500.0, image: Burger },
     { id: 2, name: 'Chicken + Spicy Pizza', price: 1100.0, image: Pizza },
     { id: 3, name: 'Lava Cake', price: 500.0, image: LavaCacke },
@@ -376,7 +379,7 @@ const restaurantMenus = {
 };
 
 const restaurantNames = {
-  res1: 'Pizza Hut',
+  12: 'Pizza Hut',
   res2: 'Taco Bell',
   res3: 'Burger King',
 };
@@ -388,8 +391,9 @@ const OrderFood = () => {
   const [cart, setCart] = useState([]);
   const [openCart, setOpenCart] = useState(false);
   const toast = useRef(null);
-  const [customerName, setCustomerName] = useState('John Doe');
+  const [customerName, setCustomerName] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
+  const [contactNo, setContactNo] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -570,6 +574,7 @@ useEffect(() => {
       formData.append('orderDate', orderDate);
       formData.append('customerName', customerName);
       formData.append('customerAddress', address);
+      formData.append('contactNo', contactNo);
 
       cart.forEach((item) => {
         formData.append('orderName', item.name);
@@ -583,7 +588,7 @@ useEffect(() => {
       const file = new File([blob], 'image.jpg', { type: blob.type });
       formData.append('image', file);
 
-      await axios.post('http://localhost:8081/addOrderDetails', formData);
+      await axios.post('http://localhost:8082/addOrderDetails', formData);
       toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order submitted!' });
       setCart([]);
       setOpenCart(false);
@@ -593,28 +598,71 @@ useEffect(() => {
     }
   };
 
+
+  const handlPayCheckout = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('orderDate', orderDate);
+      formData.append('customerName', customerName);
+      formData.append('customerAddress', address);
+      formData.append('contactNo', contactNo);
+
+      cart.forEach((item) => {
+        formData.append('orderName', item.name);
+        formData.append('quantity', item.quantity.toString());
+        formData.append('price', item.price.toString());
+      });
+      formData.append('totalPrice', getTotalPrice().toString());
+
+      const response = await fetch(cart[0].image);
+      const blob = await response.blob();
+      const file = new File([blob], 'image.jpg', { type: blob.type });
+      formData.append('image', file);
+
+      await axios.post('http://localhost:8081/payingOrders', formData);
+      toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order submitted!' });
+      setCart([]);
+      setOpenCart(false);
+    } catch (err) {
+      console.error('Checkout error:', err);
+      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to submit order' });
+    }
+  };
+
+
+
+
   const cartFooter = (
-    <div className="p-d-flex p-jc-end">
-      <Button
-        label="Close"
-        icon="pi pi-times"
-        className="p-button-text"
-        onClick={() => setOpenCart(false)}
-      />
-      {cart.length > 0 && (
-        <Button
-        label={paymentMethod === 'payOnline' ? 'Pay Now' : 'Checkout'}
-        icon="pi pi-check"
-        className="p-button-success"
-        onClick={paymentMethod === 'payOnline' ? () => navigate('/checkout') : handleCheckout}
-      />
-      )}
-    </div>
+<div className="p-d-flex p-jc-end">
+  <Button
+    label="Close"
+    icon="pi pi-times"
+    className="p-button-text"
+    onClick={() => setOpenCart(false)}
+  />
+  {cart.length > 0 && (
+    <Button
+      label={paymentMethod === 'payOnline' ? 'Pay Now' : 'Checkout'}
+      icon="pi pi-check"
+      className="p-button-success"
+      onClick={() => {
+        if (paymentMethod === 'payOnline') {
+          handlPayCheckout();      // Call your custom function
+          navigate('/checkout');    // Then navigate
+        } else {
+          handleCheckout();         // Call alternate handler
+        }
+      }}
+    />
+  )}
+</div>
+
   );
   
 
   return (
     <div className="p-p-4">
+      <Header /><br/><br/><br/><br/><br/>
       <Toast ref={toast} />
       <Toolbar
         left={
@@ -777,6 +825,17 @@ useEffect(() => {
               />
             </div>
 
+            <div className="p-field p-mt-3">
+              <label htmlFor="contactNo">Contact Number</label>
+              <br />
+              <InputText
+                id="contactNo"
+                onChange={(e) => setContactNo(e.target.value)}
+                className="p-inputtext-sm"
+                style={{ width: '550px' }}
+              />
+            </div>
+
             <div className="p-field" style={{ marginTop: '20px' }}>
               <label htmlFor="customerAddress">Customer Address</label>
               <div className="p-d-flex p-ai-center" style={{ flexDirection: 'column', gap: '20px' }}>
@@ -830,7 +889,8 @@ useEffect(() => {
           </div>
         )}
       </Dialog>
-      <Card />
+      <Card /><br/><br/><br/><br/><br/>
+      <Footer />
     </div>
   );
 };

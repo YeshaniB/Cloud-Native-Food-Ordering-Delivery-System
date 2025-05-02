@@ -31,9 +31,16 @@ public class RestaurantServiceImpl implements RestaurantService {
             dto.setOwnerContact(restaurant.getOwnerContact());
             dto.setRestaurantContact(restaurant.getRestaurantContact());
             dto.setRestaurantEmail(restaurant.getRestaurantEmail());
-            dto.setLogoUrl(restaurant.getLogoUrl());      // 🆕
-            dto.setDescription(restaurant.getDescription()); // 🆕
+            dto.setLogoUrl(restaurant.getLogoUrl());
+            dto.setDescription(restaurant.getDescription());
+
+            // ✅ Fix: Map userId if user is not null
+            if (restaurant.getUser() != null) {
+                dto.setUserId(restaurant.getUser().getId());
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }
+
 }

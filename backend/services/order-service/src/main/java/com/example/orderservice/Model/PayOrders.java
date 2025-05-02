@@ -7,20 +7,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-
 @Builder
 @Getter
 @Setter
-@Document(collection = "orderDetails")
+@Document(collection = "payOrders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class OrderDetails {
-
+public class PayOrders {
     @Id
     private String orderId;
-//    private String customerId;
+    //    private String customerId;
     private String orderDate;
     private String customerName;
     private String customerAddress;
@@ -32,6 +29,6 @@ public class OrderDetails {
     private String totalPrice;
 
     @Builder.Default
-    private String status = "prepared";
+    private String status = "Order Pending";
     private Binary image;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/drivers")
 @RequiredArgsConstructor
@@ -17,5 +18,11 @@ public class DriverController {
     @GetMapping
     public List<DriverFullDetailsDto> getAllDrivers() {
         return driverService.getAllDriverDetails();
+    }
+
+
+    @GetMapping("/activated")
+    public List<DriverFullDetailsDto> getAllActivatedDrivers() {   // ✅ NEW METHOD
+        return driverService.getAllActivatedDriverDetails();
     }
 }

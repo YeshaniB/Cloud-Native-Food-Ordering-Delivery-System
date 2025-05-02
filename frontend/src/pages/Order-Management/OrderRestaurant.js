@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
@@ -8,34 +8,29 @@ import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
-import pizzahut from "./Images/Pizzahut.jpg";
-import tacoBell from './Images/Taco-Bell.png';
-import burgerKing from './Images/Burger King.png';
 
-const restaurants = [
-  {
-    id: 'res1',
-    name: 'Pizza Hut',
-    image: pizzahut,
-    description: 'Spicy and flavorful Indian dishes.',
-  },
-  {
-    id: 'res2',
-    name: 'Taco Bell',
-    image: tacoBell,
-    description: 'Mexican street food and tacos.',
-  },
-  {
-    id: 'res3',
-    name: 'Burger King',
-    image: burgerKing,
-    description: 'Traditional Chinese meals and fast service.',
-  },
-];
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const RestaurantList = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [restaurants, setRestaurants] = useState([]);
+
+  // Fetch restaurant data from backend
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch('http://localhost:8082/api/restaurants');
+        const data = await response.json();
+        setRestaurants(data);
+      } catch (error) {
+        console.error('Error fetching restaurant data:', error);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   const handleClick = (id) => {
     navigate(`/foodDetails/${id}`);
@@ -43,11 +38,12 @@ const RestaurantList = () => {
 
   // Filter restaurants by search query
   const filteredRestaurants = restaurants.filter((restaurant) =>
-    restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+    restaurant.restaurantName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="p-mt-6 p-px-3 md:p-px-6">
+      <Header /><br /><br /><br /><br /><br />
       <div className="text-center mb-5">
         <h2 className="text-4xl font-bold text-primary">
           Available Restaurants
@@ -67,26 +63,28 @@ const RestaurantList = () => {
 
       <div className="flex flex-column align-items-center gap-5">
         {filteredRestaurants.map((restaurant) => (
-          <div key={restaurant.id} style={{ maxWidth: '900px', width: '100%' }}>
+          <div key={restaurant.userId} style={{ maxWidth: '900px', width: '100%' }}>
             <Card className="shadow-3 border-round-3xl custom-hover">
               <div className="flex flex-column md:flex-row align-items-center">
                 <Image
-                  src={restaurant.image}
+                  src={restaurant.logoUrl}
                   alt={restaurant.name}
                   className="border-round-left md:w-20rem w-full"
                   imageStyle={{ height: '200px', objectFit: 'cover' }}
                 />
                 <div className="p-4 flex flex-column justify-content-between w-full">
                   <div>
-                    <h3 className="m-0 text-primary">{restaurant.name}</h3>
-                    <Divider />
+                    <h3 className="m-0 text-primary">{restaurant.restaurantName}</h3>
                     <p className="m-0 text-gray-600">{restaurant.description}</p>
+                    <Divider />
+                    <p className="m-0 text-gray-600">{restaurant.restaurantLocation}</p>
+                    <p className="m-0 text-gray-600">{restaurant.restaurantContact}</p>
                   </div>
                   <Button
                     label="View Menu"
                     icon="pi pi-arrow-right"
                     className="p-button-rounded p-button-outlined mt-3"
-                    onClick={() => handleClick(restaurant.id)}
+                    onClick={() => handleClick(restaurant.userId)}
                   />
                 </div>
               </div>
@@ -105,12 +103,15 @@ const RestaurantList = () => {
           box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
           transform: translateY(-2px);
         }
-      `}</style>
+      `}</style><br /><br /><br /><br /><br />
+
+      <Footer />
     </div>
   );
 };
 
 export default RestaurantList;
+
 
 
 

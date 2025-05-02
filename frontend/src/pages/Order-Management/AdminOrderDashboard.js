@@ -6,6 +6,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import AdminLayout from '../../components/AdminLayout';
 
 const OrderAdminDashboard = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const OrderAdminDashboard = () => {
   const [statusCounts, setStatusCounts] = useState({}); // Object with counts for each status
 
   useEffect(() => {
-    axios.get('http://localhost:8081/orders') // orders array endpoint
+    axios.get('http://localhost:8082/orders') // orders array endpoint
       .then(response => {
         setOrders(response.data || []);
       })
@@ -22,7 +23,7 @@ const OrderAdminDashboard = () => {
         setOrders([]);
       });
 
-    axios.get('http://localhost:8081/status-count') // separate endpoint for counts
+    axios.get('http://localhost:8082/status-count') // separate endpoint for counts
       .then(response => {
         setStatusCounts(response.data || {});
       })
@@ -86,6 +87,9 @@ const OrderAdminDashboard = () => {
   const navigateToSalesReports = () => navigate('/adminSalesReports');
 
   return (
+
+    <div style={{ maxWidth: '1248px', width: '100%',marginLeft:'250px', marginTop: '-650px' }}>
+      <AdminLayout />
     <div style={{ padding: '30px', backgroundColor: '#f4f6f8' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
         <h2 style={{ color: '#1e293b' }}>📊 Admin Order Dashboard</h2>
@@ -102,7 +106,7 @@ const OrderAdminDashboard = () => {
           <div key={i} style={{
             padding: '0px',
             width: '50%',
-            marginLeft:' 350px',
+            marginLeft:' 300px',
             fontSize: '40px',
             color: '#000000',
             fontWeight: 'bold',
@@ -139,7 +143,7 @@ const OrderAdminDashboard = () => {
         <Chart type="bar" data={orderData} style={{ width: '50%', marginLeft: '300px' }} />
       </div>
 
-      <div style={{ background: '#fff', padding: '30px', borderRadius: '12px' }}>
+      {/* <div style={{ background: '#fff', padding: '30px', borderRadius: '12px' }}>
         <h3 style={{ marginBottom: '20px', color: '#1e293b' }}>🧾 Recent Orders</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
@@ -179,9 +183,10 @@ const OrderAdminDashboard = () => {
             })}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
-      <Button label="Sales Details" icon="pi pi-chart-line" className="p-button-lg p-button-info" onClick={navigateToSalesReports} style={{ marginTop: '20px' }} />
+      {/* <Button label="Sales Details" icon="pi pi-chart-line" className="p-button-lg p-button-info" onClick={navigateToSalesReports} style={{ marginTop: '20px' }} /> */}
+    </div>
     </div>
   );
 };

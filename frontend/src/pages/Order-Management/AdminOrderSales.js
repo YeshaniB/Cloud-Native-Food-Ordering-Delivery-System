@@ -6,12 +6,14 @@ import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import AdminLayout from '../../components/AdminLayout';
+
 const AdminSalesReports = () => {
   const navigate = useNavigate();
   const [reportData, setReportData] = useState({ totalPrice: 0, orderCount: 0, decreasedTotal: 0 });
 
   useEffect(() => {
-    axios.get('http://localhost:8081/getTotalPrice')
+    axios.get('http://localhost:8082/getTotalPrice')
       .then(response => {
         setReportData(response.data);
       })
@@ -87,6 +89,8 @@ const AdminSalesReports = () => {
   ];
 
   return (
+    <div style={{ maxWidth: '1248px', width: '100%',marginLeft:'250px', marginTop: '-650px' }}>
+      <AdminLayout />
     <div style={{ padding: '30px', backgroundColor: '#f8fafc', fontFamily: 'Segoe UI, sans-serif' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <h2 style={{ margin: 0, color: '#0f172a' }}>📊 Sales Reports</h2>
@@ -111,6 +115,7 @@ const AdminSalesReports = () => {
         <h3 style={{ color: '#1e293b', marginBottom: '20px' }}>📈 Monthly Revenue Overview</h3>
         <Chart type="line" data={salesData} options={options} />
       </div>
+    </div>
     </div>
   );
 };

@@ -21,4 +21,11 @@ public class RestaurantClient {
         ResponseEntity<MenuItemDTO[]> response = restTemplate.getForEntity(url, MenuItemDTO[].class);
         return Arrays.asList(Objects.requireNonNull(response.getBody()));
     }
+
+    public List<MenuItemDTO> ResById(String restaurantId) {
+        String url = "http://restaurant-service:8081/api/menu/restaurant/{restaurantId}";
+        ResponseEntity<MenuItemDTO[]> response = restTemplate.getForEntity(url, MenuItemDTO[].class, restaurantId);
+        return Arrays.asList(Objects.requireNonNull(response.getBody()));
+    }
+
 }
