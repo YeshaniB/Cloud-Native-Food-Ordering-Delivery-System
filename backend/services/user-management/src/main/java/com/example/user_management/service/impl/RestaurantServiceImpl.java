@@ -34,9 +34,12 @@ public class RestaurantServiceImpl implements RestaurantService {
             dto.setLogoUrl(restaurant.getLogoUrl());
             dto.setDescription(restaurant.getDescription());
 
+
             // ✅ Fix: Map userId if user is not null
             if (restaurant.getUser() != null) {
                 dto.setUserId(restaurant.getUser().getId());
+                dto.setActivated(restaurant.getUser().isActivated());
+
             }
 
             return dto;

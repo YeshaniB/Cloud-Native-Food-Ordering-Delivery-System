@@ -1,4 +1,4 @@
-// AdminDashboard.jsx
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Chart } from 'primereact/chart';

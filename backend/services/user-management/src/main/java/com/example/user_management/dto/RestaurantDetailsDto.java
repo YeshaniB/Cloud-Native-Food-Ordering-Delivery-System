@@ -16,5 +16,7 @@ public class RestaurantDetailsDto {
     private String logoUrl;
     private String description;
     private Long userId;
+    private boolean activated;
+
 
 }
