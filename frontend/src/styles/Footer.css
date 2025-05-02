@@ -1,0 +1,106 @@
+/* src/styles/Footer.css */
+
+.footer {
+    background-color: #161616;
+    color: #fff;
+    padding: 30px 20px 20px; /* Reduced padding for smaller height */
+    font-family: 'Poppins', sans-serif;
+    width: 100%;  /* Ensure the footer spans the full width */
+    margin: 0 auto;  /* Centering the footer */
+    position: relative;
+    bottom: 0;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1100px; /* Keeps footer content centered */
+    margin: 0 auto;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 280px; /* Ensuring consistent width for each section */
+    max-width: 320px; /* Limiting the maximum width of each section */
+    padding: 15px;
+    background-color: #222;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.footer-section h3 {
+    margin-bottom: 15px;
+    color: #ffcc00;
+}
+
+.footer-section p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #ccc;
+}
+
+/* Uniform text size for all <li> elements */
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+    color: #ccc;
+    font-size: 14px; /* Uniform font size for all list items */
+}
+
+.footer-section .social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-icon {
+    font-size: 24px;
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: #ffcc00;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+/* Ensuring Button font size is consistent */
+.p-button-sm {
+    font-size: 14px; /* Ensure button text is the same size */
+    padding: 6px 12px; /* Adjust padding if necessary */
+}
+
+/* Full-page height adjustment */
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+footer {
+    margin-top: auto;  /* Ensure the footer is always at the bottom */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-section {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+}

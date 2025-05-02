@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8d1bf1ac-9a38-4829-ab79-82645b54bde7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/DTO/OrderSummaryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/DTO/RestaurantDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Interfaces/StatusCountProjection.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Services/MenuItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Services/RestaurantClinet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/java/com/example/restaurantservice/RestaurantServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/java/com/example/restaurantservice/controller/MenuItemController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/java/com/example/restaurantservice/model/MenuItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/java/com/example/restaurantservice/repository/MenuItemRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/java/com/example/restaurantservice/service/MenuItemService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/src/test/java/com/example/restaurantservice/RestaurantServiceApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/restaurant-service/uploads/1756c89d-51c1-4d5c-b731-21220d6fbaa5_image-01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Controllers/OrderUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Controllers/OrderUserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Model/OrderDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Model/OrderDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/OrderServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Repository/OrderDetailsRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/src/main/java/com/example/orderservice/Repository/OrderDetailsRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/services/order-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/AdminOrderDashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/AdminOrderDashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/AdminOrderSales.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/AdminOrderSales.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/OrderDetails.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/OrderDetails.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/OrderFood.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/pages/Order-Management/OrderFood.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2wGOsSJtAwmMAbDNvFN4xNFtpqg" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/USER/Desktop/Cloud-Native-Food-Ordering-Delivery-System/backend",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8d1bf1ac-9a38-4829-ab79-82645b54bde7" name="Changes" comment="" />
+      <created>1745664650609</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745664650609</updated>
+      <workItem from="1745664652155" duration="90000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
