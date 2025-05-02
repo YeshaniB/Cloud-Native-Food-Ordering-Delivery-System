@@ -333,7 +333,7 @@
 //     }
 // }, [status]);
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, use } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -599,35 +599,62 @@ useEffect(() => {
   };
 
 
-  const handlPayCheckout = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('orderDate', orderDate);
-      formData.append('customerName', customerName);
-      formData.append('customerAddress', address);
-      formData.append('contactNo', contactNo);
+  // const handlPayCheckout = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append('orderDate', orderDate);
+  //     formData.append('customerName', customerName);
+  //     formData.append('customerAddress', address);
+  //     formData.append('contactNo', contactNo);
 
-      cart.forEach((item) => {
-        formData.append('orderName', item.name);
-        formData.append('quantity', item.quantity.toString());
-        formData.append('price', item.price.toString());
-      });
-      formData.append('totalPrice', getTotalPrice().toString());
+  //     cart.forEach((item) => {
+  //       formData.append('orderName', item.name);
+  //       formData.append('quantity', item.quantity.toString());
+  //       formData.append('price', item.price.toString());
+  //     });
+  //     formData.append('totalPrice', getTotalPrice().toString());
 
-      const response = await fetch(cart[0].image);
-      const blob = await response.blob();
-      const file = new File([blob], 'image.jpg', { type: blob.type });
-      formData.append('image', file);
+  //     const response = await fetch(cart[0].image);
+  //     const blob = await response.blob();
+  //     const file = new File([blob], 'image.jpg', { type: blob.type });
+  //     formData.append('image', file);
 
-      await axios.post('http://localhost:8081/payingOrders', formData);
-      toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order submitted!' });
-      setCart([]);
-      setOpenCart(false);
-    } catch (err) {
-      console.error('Checkout error:', err);
-      toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to submit order' });
+  //     await axios.post('http://localhost:8081/payingOrders', formData);
+  //     toast.current.show({ severity: 'success', summary: 'Success', detail: 'Order submitted!' });
+  //     setCart([]);
+  //     setOpenCart(false);
+  //   } catch (err) {
+  //     console.error('Checkout error:', err);
+  //     toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to submit order' });
+  //   }
+  // };
+
+
+    const handlPayCheckout = ()=>{
+      const name = customerName;
+      const address = customerAddress;
+      const contact = contactNo;
+      const totalPrice = getTotalPrice();
+      const orderDate = new Date().toISOString().split('T')[0];
+      const orderItems = cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      }));
+
+      navigate("/checkout", {
+        state: {
+          name,
+          address,
+          contact,
+          totalPrice,
+          orderDate,
+          orderItems
+        }
+      })
+
     }
-  };
+
 
 
 
