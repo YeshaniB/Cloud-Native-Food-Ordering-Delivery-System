@@ -4,108 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="673feb04-d46a-496f-8d4e-1c9edbe150a9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/DeliveryServiceApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/config/CorsConfig$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/config/CorsConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/controller/DeliveryController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/controller/DriverController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/controller/LocationController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/dto/OrderDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/model/Delivery.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/model/Driver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/repository/DeliveryRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/repository/DriverRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/service/DeliveryService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/classes/com/example/delivery_service/service/OrderClient.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/delivery_service-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/delivery_service-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/surefire-reports/2025-04-27T12-14-04_789.dumpstream" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/surefire-reports/TEST-com.example.delivery_service.DeliveryServiceApplicationTests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/surefire-reports/com.example.delivery_service.DeliveryServiceApplicationTests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/delivery_service/target/test-classes/com/example/delivery_service/DeliveryServiceApplicationTests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/NotificationServiceApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/controller/NotificationController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/model/Notification.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/repository/NotificationRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/service/EmailService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/classes/com/example/notificationservice/service/SmsService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/notification-service/target/test-classes/com/example/notificationservice/NotificationServiceApplicationTests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Controllers/OrderUserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/DTO/OrderSummaryResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/DTO/RestaurantDTO$RestaurantDTOBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/DTO/RestaurantDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Interfaces/StatusCountProjection.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Model/OrderDetails$OrderDetailsBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Model/OrderDetails.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/OrderServiceApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Repository/OrderDetailsRepo.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Services/RestaurantClinet$1.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/classes/com/example/orderservice/Services/RestaurantClinet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/spring-boot-docker.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/spring-boot-docker.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/surefire-reports/2025-04-29T13-15-11_112.dumpstream" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/surefire-reports/TEST-com.example.orderservice.OrderServiceApplicationTests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/surefire-reports/com.example.orderservice.OrderServiceApplicationTests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/order-service/target/test-classes/com/example/orderservice/OrderServiceApplicationTests.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/RestaurantServiceApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/controller/MenuItemController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/dto/OrderDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/dto/RestaurantDetailsDto.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/model/MenuItem.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/repository/MenuItemRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/service/MenuItemService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/service/OrderService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/classes/com/example/restaurantservice/service/UserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/restaurant-service-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/restaurant-service-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/surefire-reports/2025-05-01T19-27-45_935.dumpstream" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/surefire-reports/TEST-com.example.restaurantservice.RestaurantServiceApplicationTests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/surefire-reports/com.example.restaurantservice.RestaurantServiceApplicationTests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/services/restaurant-service/target/test-classes/com/example/restaurantservice/RestaurantServiceApplicationTests.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/services/user-management/src/main/java/com/example/user_management/model/RestaurantDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/user-management/src/main/java/com/example/user_management/model/RestaurantDetails.java" afterDir="false" />
-    </list>
+    <list default="true" id="673feb04-d46a-496f-8d4e-1c9edbe150a9" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -172,7 +71,7 @@
       <workItem from="1743507218370" duration="67000" />
       <workItem from="1743567181605" duration="20000" />
       <workItem from="1744770140168" duration="2018000" />
-      <workItem from="1746206143157" duration="961000" />
+      <workItem from="1746206143157" duration="1276000" />
     </task>
     <servers />
   </component>
