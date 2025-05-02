@@ -60,7 +60,7 @@ services:
     ports:
       - "8084:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres?user=postgres.irunjcphkviuptxxwegr&password=user@1234
+      SPRING_DATASOURCE_URL: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres?user=postgres.mhoglnkkptjaiuaasmre&password=User@123
 
     volumes:
       - ./uploads:/uploads  # Map host's ./uploads folder to container's /uploads
