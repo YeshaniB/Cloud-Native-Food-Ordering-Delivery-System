@@ -77,11 +77,14 @@ import { Menubar } from 'primereact/menubar';
 import { Divider } from 'primereact/divider';
 import { Card } from 'primereact/card';
 import { Image } from 'primereact/image';
+import AdminLayout from "../layout/AdminLayout";
+import Header   from "../components/Header";
+import Footer from "../components/Footer";
 
 import 'primereact/resources/themes/lara-light-blue/theme.css'; // Or your preferred theme
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
-import
+
 
 const AddDriverForm = () => {
     const [formData, setFormData] = useState({
@@ -176,6 +179,7 @@ const AddDriverForm = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            <AdminLayout />
             {/* Top Navbar */}
             <div>
                 <Menubar model={navbarItems} start={logo} />
@@ -226,9 +230,7 @@ const AddDriverForm = () => {
 
             {/* Footer */}
             <Divider />
-            <div style={{ textAlign: 'center', padding: '1rem', background: '#f8f8f8' }}>
-                © 2025 Your Company. All rights reserved.
-            </div>
+            <Footer/>
         </div>
     );
 };

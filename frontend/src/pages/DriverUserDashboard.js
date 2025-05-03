@@ -23,7 +23,8 @@ const DriverUserDashboard = () => {
 
     const fetchDeliveries = async () => {
         try {
-            const response = await axios.get(`http://localhost:8083/api/deliveries?driverId=${driverId}`);
+            //const response = await axios.get(`http://localhost:8083/api/deliveries?driverId=${driverId}`);
+            const response = await axios.get(`http://localhost:8082/getPrepared`);
             setDeliveries(response.data);
         } catch (error) {
             console.error('Error fetching deliveries:', error);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -11,6 +12,13 @@ import AdminLayout from "../components/AdminLayout";
 const AdminDeliveryDashboard = () => {
     const [drivers, setDrivers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+
+
+    const handleAddDriver = () => {
+        navigate('/add-driver');
+    };
 
     useEffect(() => {
         fetchDrivers();
@@ -41,6 +49,24 @@ const AdminDeliveryDashboard = () => {
         }
     };
 
+    const handleUpdateDriver = async (driverId) => {
+        try {
+            const response = await fetch(`http://localhost:8083/api/drivers/${driverId}`, {
+                method: 'PUT', // Use PUT or PATCH based on your API
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: 'Updated' }) // Example payload
+            });
+
+            if (!response.ok) throw new Error('Failed to update driver');
+
+            const result = await response.json();
+            console.log('Driver updated:', result);
+            alert('Driver updated successfully!');
+        } catch (error) {
+            console.error('Error updating driver:', error);
+            alert('Failed to update driver.');
+        }
+    };
     const statusBodyTemplate = (rowData) => {
         const getSeverity = (status) => {
             switch (status) {
@@ -71,6 +97,23 @@ const AdminDeliveryDashboard = () => {
         );
     };
 
+    const handleDeleteDriver = async (driverId) => {
+        try {
+            const response = await fetch(`http://localhost:8083/api/drivers/${driverId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) throw new Error('Failed to delete driver');
+
+            alert('Driver deleted successfully!');
+            // Optionally refresh the driver list
+            fetchDrivers();
+        } catch (error) {
+            console.error('Error deleting driver:', error);
+            alert('Failed to delete driver.');
+        }
+    };
+
     const handleViewOnMap = (driver) => {
         console.log('View driver on map:', driver);
         // Implement map view functionality here
@@ -81,6 +124,8 @@ const AdminDeliveryDashboard = () => {
         console.log('View delivery history for driver:', driverId);
         // Implement navigation to driver history page
     };
+
+
 
     const header = (
         <div className="table-header">
@@ -98,7 +143,7 @@ const AdminDeliveryDashboard = () => {
                     icon="pi pi-plus"
                     className="p-button-success"
                     // onClick={handleAddDriver}
-                />
+                    onClick={() => navigate('/add-driver')} />
             </div>
         </div>
     );
@@ -143,11 +188,11 @@ const AdminDeliveryDashboard = () => {
                         body={(rowData) => (
                             <div className="action-buttons">
                                 <Button
-                                    icon="pi pi-map-marker"
-                                    className="p-button-rounded p-button-info"
-                                    tooltip="View on Map"
+                                    icon="pi pi-trash"
+                                    className="p-button-rounded p-button-danger"
+                                    tooltip="Delete Driver"
                                     tooltipOptions={{ position: 'top' }}
-                                    onClick={() => handleViewOnMap(rowData)}
+                                    onClick={() => handleDeleteDriver(rowData.id)}
                                 />
                                 <Button
                                     icon="pi pi-history"
@@ -161,7 +206,7 @@ const AdminDeliveryDashboard = () => {
                                     className="p-button-rounded p-button-warning"
                                     tooltip="Edit Driver"
                                     tooltipOptions={{ position: 'top' }}
-                                    // onClick={() => handleEditDriver(rowData.id)}
+                                    onClick={() => handleUpdateDriver(rowData.id)}
                                 />
                             </div>
                         )}

@@ -1,5 +1,6 @@
 package com.example.delivery_service.service;
 
+import com.example.delivery_service.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
