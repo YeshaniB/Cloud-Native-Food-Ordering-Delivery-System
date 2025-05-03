@@ -16,16 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
 
-
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = "*") // Allow React to access
+@CrossOrigin(origins = "http://localhost:3000")
 public class PaymentController {
 
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
-
-
 
     @Autowired
     private PaymentRecordRepository paymentRecordRepository;
@@ -34,8 +31,15 @@ public class PaymentController {
     public Map<String, Object> createPaymentIntent(@RequestBody Map<String, Object> request) throws Exception {
         Stripe.apiKey = stripeSecretKey;
 
-        int amount = (int) request.get("amount");
-        String orderId = (String) request.get("orderId"); // Frontend should send orderId now
+        // ✅ Safe number parsing
+        Object amountObj = request.get("amount");
+        int amount = (amountObj instanceof Number)
+                ? ((Number) amountObj).intValue()
+                : Integer.parseInt(amountObj.toString());
+
+        String orderId = (String) request.get("orderId");
+
+        System.out.println("Creating payment intent for amount: " + amount + ", orderId: " + orderId);
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount((long) amount)
@@ -49,28 +53,27 @@ public class PaymentController {
         record.setPaymentIntentId(intent.getId());
         record.setAmount((long) amount);
         record.setCurrency("usd");
-        record.setStatus("SUCCESSFUL");
+        record.setStatus("CREATED");
         record.setOrderId(orderId);
         record.setCreatedAt(new Date());
         paymentRecordRepository.save(record);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("clientSecret", intent.getClientSecret());
+
         return responseData;
     }
 
     @PostMapping("/webhook")
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
-        String endpointSecret = "whsec_6bd1b4504dabecfac2c671a7631ffbfcfc8dad2833bac4aac0f33e5df610ee71"; // We'll generate this from Stripe dashboard
-        Event event = null;
+        String endpointSecret = "whsec_6bd1b4504dabecfac2c671a7631ffbfcfc8dad2833bac4aac0f33e5df610ee71";
 
         try {
-            event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
+            Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
 
             if ("payment_intent.succeeded".equals(event.getType())) {
                 PaymentIntent intent = (PaymentIntent) event.getDataObjectDeserializer().getObject().orElse(null);
                 if (intent != null) {
-                    // Update PaymentRecord status
                     PaymentRecord record = paymentRecordRepository.findByPaymentIntentId(intent.getId());
                     if (record != null) {
                         record.setStatus("SUCCEEDED");
@@ -79,11 +82,10 @@ public class PaymentController {
                 }
             }
         } catch (Exception e) {
+            System.err.println("⚠️ Webhook error: " + e.getMessage());
             return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.ok("");
     }
-
-
 }

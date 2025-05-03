@@ -1,30 +1,46 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import {
+    Elements,
+    CardElement,
+    useStripe,
+    useElements,
+} from "@stripe/react-stripe-js";
 import axios from "axios";
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-
-
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const stripePromise = loadStripe("pk_test_51RIU5YQ1h8BbuwFsNMr4bQEoeMSdBaXXF5yetR9CGhr8Ujxuo3GHtpuAcNgLQAx0KRNpPWpERBNyXpPpgsA9xaTC00VRLxvgy4");
 
 const CheckoutForm = () => {
+    const location = useLocation();
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
 
-    const amount = 1000; // 10 dollars
+    const orderData = location.state || {};
+    console.log("Received in checkout:", orderData);
+
+    const totalPrice = parseFloat(orderData.totalPrice);
+    const amount = isNaN(totalPrice) ? 0 : Math.round(totalPrice * 100); // cents for Stripe
+    const orderId = "ORD-" + Math.floor(Math.random() * 100000);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (amount <= 0) {
+            alert("Invalid amount. Please go back and review your order.");
+            return;
+        }
+
         setLoading(true);
 
         try {
-            const { data } = await axios.post('http://localhost:8082/api/payment/create-payment-intent', {
-                amount: amount,
-                orderId: "ORDER123"
+            const { data } = await axios.post("http://localhost:8086/api/payment/create-payment-intent", {
+                amount,
+                orderId,
             });
 
             const result = await stripe.confirmCardPayment(data.clientSecret, {
@@ -34,15 +50,19 @@ const CheckoutForm = () => {
             });
 
             if (result.error) {
-                console.error(result.error.message);
                 alert("Payment Failed: " + result.error.message);
-            } else {
-                if (result.paymentIntent.status === "succeeded") {
-                    alert("Payment Successful! 🎉");
-                }
+            } else if (result.paymentIntent.status === "succeeded") {
+                alert("Payment Successful! 🎉");
+
+                // Optional: Send full order to backend
+                await axios.post("http://localhost:8086/api/payment/store-order", {
+                    ...orderData,
+                    orderId,
+                    paymentIntentId: result.paymentIntent.id
+                });
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error(error);
             alert("Something went wrong. Please try again.");
         }
 
@@ -50,60 +70,55 @@ const CheckoutForm = () => {
     };
 
     return (
-        <>
-            <Header/>
-
         <form onSubmit={handleSubmit} style={styles.form}>
             <h2 style={styles.title}>Complete Your Payment</h2>
-
             <div style={styles.amountBox}>
                 <p style={styles.amountLabel}>Amount to Pay</p>
                 <h3 style={styles.amountValue}>${(amount / 100).toFixed(2)}</h3>
             </div>
-
             <div style={styles.cardElement}>
                 <CardElement options={{ hidePostalCode: true }} />
             </div>
-
             <button type="submit" disabled={!stripe || loading} style={styles.payButton}>
                 {loading ? "Processing..." : "Pay Now"}
             </button>
         </form>
-            <Footer/>
-</>
-
-
     );
-
-
 };
 
 const CheckoutPage = () => {
     return (
-        <div style={styles.container}>
-            <Elements stripe={stripePromise}>
-                <CheckoutForm />
-            </Elements>
-            <div style={styles.imageContainer}>
-                <img src="/pancakescheckout.png" alt="Checkout Visual" style={{ width: "400px", borderRadius: "20px" }} />
+        <>
+            <Header />
+            <div style={styles.checkoutContainer}>
+                <Elements stripe={stripePromise}>
+                    <CheckoutForm />
+                </Elements>
+                <div style={styles.imageContainer}>
+                    <img
+                        src="/pancake.jpg"
+                        alt="Delicious Pancakes"
+                        style={styles.image}
+                    />
+                </div>
             </div>
-        </div>
+            <Footer />
+        </>
     );
 };
 
 export default CheckoutPage;
 
-// 💻 Styles
+// 💅 Styles
 const styles = {
-    container: {
+    checkoutContainer: {
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
-        minHeight: "100vh",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "40px",
+        padding: "150px 20px 50px",
         backgroundColor: "#fff",
-        padding: "40px",
-        gap: "50px",
-        flexWrap: "wrap", // responsive for mobile
     },
     form: {
         backgroundColor: "#ffffff",
@@ -157,11 +172,13 @@ const styles = {
     imageContainer: {
         maxWidth: "400px",
         width: "100%",
+        textAlign: "center",
     },
     image: {
         width: "100%",
-        borderRadius: "12px",
+        borderRadius: "0px",
         objectFit: "cover",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+        boxShadow: "none",
+        border: "none",
     },
 };

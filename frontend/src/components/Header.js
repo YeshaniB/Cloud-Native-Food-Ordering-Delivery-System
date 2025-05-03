@@ -23,7 +23,7 @@ function Header() {
                             <li onClick={() => navigate('/')}>
                                 <a>Home</a>
                             </li>
-                            <li onClick={() => navigate('/')}>
+                            <li onClick={() => navigate('/orderRestaurant')}>
                                 <a className="dropbtn">Place Order</a>
                             </li>
                             <li>

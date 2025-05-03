@@ -39,7 +39,7 @@ const DashboardPage = () => {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [selectedEnabled, setSelectedEnabled] = useState(null);
 
-    const navigate = useNavigate(); // ✅ Initialize navigate
+    const navigate = useNavigate(); //
 
     const fetchUsers = async () => {
         try {
@@ -52,7 +52,7 @@ const DashboardPage = () => {
             setUsers(mappedUsers);
         } catch (error) {
             console.error(error);
-            alert('Failed to fetch users.');
+            alert('Loading..');
         }
     };
 
@@ -198,7 +198,7 @@ const DashboardPage = () => {
         <Container maxWidth="xl" sx={{ mt: 5 }}>
             {errorCounts && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    Failed to fetch user counts. Please try again later.
+                    Loading Please wait...
                 </Alert>
             )}
 

@@ -20,7 +20,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import API from '../api/api';
 import RestaurantForm from '../components/RestaurantForm';
 
-const BASE_URL = "http://localhost:8081"; // Use env var in prod
+const BASE_URL = "http://localhost:8085"; // Use env var in prod
 
 const RestaurantListPage = () => {
     const [restaurants, setRestaurants] = useState([]);

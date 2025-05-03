@@ -630,30 +630,37 @@ useEffect(() => {
   // };
 
 
-    const handlPayCheckout = ()=>{
-      const name = customerName;
-      const address = customerAddress;
-      const contact = contactNo;
-      const totalPrice = getTotalPrice();
-      const orderDate = new Date().toISOString().split('T')[0];
-      const orderItems = cart.map(item => ({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price
-      }));
+  const handlPayCheckout = () => {
+    const name = customerName;
+    const address = customerAddress;
+    const contact = contactNo;
+    const orderDate = new Date().toISOString().split('T')[0];
 
-      navigate("/checkout", {
-        state: {
-          name,
-          address,
-          contact,
-          totalPrice,
-          orderDate,
-          orderItems
-        }
-      })
+    const totalPrice = getTotalPrice(); // ✅ Calculates from hardcoded prices in cart
 
+    const orderItems = cart.map(item => ({
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price
+    }));
+
+    if (!totalPrice || cart.length === 0) {
+      alert("Please add items to your cart before checking out.");
+      return;
     }
+
+    // ✅ Navigate to Checkout with all data
+    navigate("/checkout", {
+      state: {
+        name,
+        address,
+        contact,
+        totalPrice,      // 👈 Passed to CheckoutPage
+        orderDate,
+        orderItems
+      }
+    });
+  };
 
 
 
@@ -675,7 +682,7 @@ useEffect(() => {
       onClick={() => {
         if (paymentMethod === 'payOnline') {
           handlPayCheckout();      // Call your custom function
-          navigate('/checkout');    // Then navigate
+
         } else {
           handleCheckout();         // Call alternate handler
         }
@@ -764,7 +771,7 @@ useEffect(() => {
                         marginLeft: '10px'
                       }}
                     >
-                      Rs. {item.price.toFixed(2)}
+                      $. {item.price.toFixed(2)}
                     </span>
                     <Button
                       label="Add to Cart"
