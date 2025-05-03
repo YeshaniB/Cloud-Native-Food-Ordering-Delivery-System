@@ -22,6 +22,16 @@ public class OrderClient {
         return Arrays.asList(Objects.requireNonNull(response.getBody()));
     }
 
+    public List<OrderDTO> getNearbyOrders(double lat, double lng, double radiusKm) {
+        String url = "http://order-service:8081/orders/nearby";
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("lat", lat)
+                .queryParam("lng", lng)
+                .queryParam("radiusKm", radiusKm);
+
+        ResponseEntity<OrderDTO[]> response = restTemplate.getForEntity(builder.toUriString(), OrderDTO[].class);
+        return Arrays.asList(Objects.requireNonNull(response.getBody()));
+    }
 
 }
 

@@ -13,7 +13,8 @@ public class Location {
         this.lat = lat;
         this.lng = lng;
     }
-    // Getters and setters
+
+     //Getters and setters
     public double getLat() {
         return lat;
     }

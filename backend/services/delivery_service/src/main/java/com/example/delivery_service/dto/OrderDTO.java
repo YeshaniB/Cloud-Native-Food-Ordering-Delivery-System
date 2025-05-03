@@ -14,5 +14,14 @@ public class OrderDTO {
     private List<String> price;
     private String totalPrice;
     private String status;
+    private Double distance;
+
+
+    public String getDeliveryLocation() {
+        return customerAddress;
+    }
+    public void setDeliveryLocation(String deliveryLocation) {
+        this.customerAddress = deliveryLocation;
+    }
 
 }

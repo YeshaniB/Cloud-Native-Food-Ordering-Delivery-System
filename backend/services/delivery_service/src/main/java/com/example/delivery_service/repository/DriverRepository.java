@@ -12,9 +12,15 @@ import java.util.Optional;
 public interface DriverRepository extends MongoRepository<Driver, String> {
 
     Optional<Driver> findFirstByStatus(String status);
+    List<Driver> findByStatus(String status);
+    Optional<Driver> findByName(String name);
+    //old
     List<Driver> findByStatusAndLocation(String status, String location);
 
-    default List<Driver> findAvailableDriversByLocation(String location) {
-        return findByStatusAndLocation("Available", location);
-    }
+
+
 }
+
+//default List<Driver> findAvailableDriversByLocation(String location) {
+//    return findByStatusAndLocation("Available", location);
+//}

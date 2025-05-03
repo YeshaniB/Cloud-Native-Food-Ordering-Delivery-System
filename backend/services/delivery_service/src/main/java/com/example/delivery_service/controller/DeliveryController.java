@@ -30,9 +30,14 @@ public class DeliveryController {
     }
 
     // Assign a driver to a delivery
-    @PostMapping("/assign")
-    public Delivery assignDriver(@RequestParam String orderId, @RequestParam String customer, @RequestParam String deliveryLocation) {
-        return deliveryService.assignDriver(orderId, customer, deliveryLocation);
+//    @PostMapping("/assign")
+//    public Delivery assignDriver(@RequestParam String orderId, @RequestParam String customer, @RequestParam String deliveryLocation) {
+//        return deliveryService.assignDriver(orderId, customer, deliveryLocation);
+//    }
+    @PutMapping("/{id}/assign")
+    public Delivery assignDriverToDelivery(@PathVariable String id, @RequestBody Map<String, String> request) {
+        String driverId = request.get("driverId");
+        return deliveryService.assignDriverToDelivery(id, driverId);
     }
 
     @GetMapping
@@ -57,41 +62,3 @@ public class DeliveryController {
         return orderClient.getPreparedOrders();
     }
 }
-//@RestController
-//@RequestMapping("/api/deliveries")
-//public class DeliveryController {
-//
-//    private final DeliveryService deliveryService;
-//    private final OrderClient orderClient;
-//
-//    //  Constructor includes OrderClient
-//    public DeliveryController(DeliveryService deliveryService, OrderClient orderClient) {
-//        this.deliveryService = deliveryService;
-//        this.orderClient = orderClient;
-//    }
-//    @PostMapping("/assign")
-//    public Delivery assignDriver(@RequestBody Map<String, Object> request) {
-//        Long orderId = Long.valueOf(request.get("orderId").toString());
-//        String location = request.get("location").toString();
-//        return deliveryService.assignDriver(orderId, location);
-//    }
-//
-//    @GetMapping
-//    public List<Delivery> getAllDeliveries() {
-//        return deliveryService.getAllDeliveries();
-//    }
-//
-//    @PutMapping("/{id}/status")
-//    public Delivery updateStatus(@PathVariable String id, @RequestParam String status) {
-//        return deliveryService.updateDeliveryStatus(id, status);
-//    }
-//    @GetMapping("/getPrepared")
-//    public List<OrderDTO> getPreparedOrders() {
-//        System.out.println("Fetching prepared orders...");
-//        return orderClient.getPreparedOrders();
-//        //return List.of(new OrderDTO(1L, "Burger", "PREPARED"));
-//    }
-//
-//
-//
-//}

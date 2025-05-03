@@ -107,20 +107,4 @@ public class Driver {
         this.deliveries = deliveries;
     }
 
-    // Getter and Setter
-//    public Location getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(Location location) {
-//        this.location = location;
-//    }
-//
-//    public List<String> getDeliveries() {
-//        return deliveries;
-//    }
-//
-//    public void setDeliveries(List<String> deliveries) {
-//        this.deliveries = deliveries;
-//    }
 }
