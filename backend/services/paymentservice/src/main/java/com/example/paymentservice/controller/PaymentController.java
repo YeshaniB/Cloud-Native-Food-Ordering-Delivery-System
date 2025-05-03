@@ -88,4 +88,10 @@ public class PaymentController {
 
         return ResponseEntity.ok("");
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllPayments() {
+        return ResponseEntity.ok(paymentRecordRepository.findAll());
+    }
+
 }

@@ -41,6 +41,8 @@ const AdminLayout = () => {
         { text: "Order Management", icon: <ShoppingCart />, path: "/admin/orders" },
         { text: "Menu Management", icon: <RestaurantMenu />, path: "/admin/menu" },
         { text: "Delivery Management", icon: <LocalShipping />, path: "/admin/delivery" },
+        { text: "Payments", icon: <AccountCircle />, path: "/admin/payments" },
+
     ];
 
     const hoverColors = ["#C1C454", "#FDB70D", "#C1C454", "#FDB70D"];

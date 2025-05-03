@@ -8,6 +8,12 @@ import com.example.user_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.user_management.repository.DriverDetailsRepository;
+import com.example.user_management.repository.RestaurantDetailsRepository;
+
+
+
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final DriverDetailsRepository driverDetailsRepository;
+    private final RestaurantDetailsRepository restaurantDetailsRepository;
 
     @Override
     public User registerUser(UserDto userDto) {
@@ -50,8 +59,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+
+        User user = userOpt.get();
+
+        // Delete related driver details if applicable
+        if (user.getUserType() == UserType.DRIVER) {
+            DriverDetails driver = driverDetailsRepository.findByUserId(id);
+            if (driver != null) {
+                driverDetailsRepository.delete(driver);
+            }
+        }
+
+        // Delete related restaurant details if applicable
+        if (user.getUserType() == UserType.RESTAURANT) {
+            RestaurantDetails restaurant = restaurantDetailsRepository.findByUserId(id);
+            if (restaurant != null) {
+                restaurantDetailsRepository.delete(restaurant);
+            }
+        }
+
+        // Finally delete the user
         userRepository.deleteById(id);
     }
+
+
 
     @Override
     public User activateUser(Long id) {

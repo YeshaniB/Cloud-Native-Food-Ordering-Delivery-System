@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import {
     Elements,
@@ -9,6 +9,9 @@ import {
 } from "@stripe/react-stripe-js";
 import axios from "axios";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -16,13 +19,12 @@ const stripePromise = loadStripe("pk_test_51RIU5YQ1h8BbuwFsNMr4bQEoeMSdBaXXF5yet
 
 const CheckoutForm = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
 
     const orderData = location.state || {};
-    console.log("Received in checkout:", orderData);
-
     const totalPrice = parseFloat(orderData.totalPrice);
     const amount = isNaN(totalPrice) ? 0 : Math.round(totalPrice * 100); // cents for Stripe
     const orderId = "ORD-" + Math.floor(Math.random() * 100000);
@@ -31,7 +33,7 @@ const CheckoutForm = () => {
         e.preventDefault();
 
         if (amount <= 0) {
-            alert("Invalid amount. Please go back and review your order.");
+            toast.error("Invalid amount. Please review your order.");
             return;
         }
 
@@ -50,39 +52,66 @@ const CheckoutForm = () => {
             });
 
             if (result.error) {
-                alert("Payment Failed: " + result.error.message);
+                toast.error("Payment Failed: " + result.error.message);
             } else if (result.paymentIntent.status === "succeeded") {
-                alert("Payment Successful! 🎉");
+                toast.success("🎉 Payment Successful! Redirecting...");
 
-                // Optional: Send full order to backend
-                await axios.post("http://localhost:8086/api/payment/store-order", {
-                    ...orderData,
-                    orderId,
-                    paymentIntentId: result.paymentIntent.id
+                // Save order to order-service
+                const formData = new FormData();
+                formData.append("orderDate", orderData.orderDate);
+                formData.append("customerName", orderData.name);
+                formData.append("customerAddress", orderData.address);
+                formData.append("contactNo", orderData.contact);
+                formData.append("totalPrice", orderData.totalPrice);
+
+                const dummyImage = new Blob(["dummy"], { type: "text/plain" });
+                formData.append("image", dummyImage, "dummy.txt");
+
+                orderData.orderItems.forEach(item => {
+                    formData.append("orderName", item.name);
+                    formData.append("quantity", item.quantity.toString());
+                    formData.append("price", item.price.toString());
                 });
+
+                try {
+                    await axios.post("http://localhost:8082/addOrderDetails", formData);
+                    console.log("✅ Order saved.");
+                } catch (err) {
+                    console.error("❌ Failed to send order:", err);
+                    toast.error("Order save failed.");
+                }
+
+                // Redirect to success page after 3 sec
+                setTimeout(() => {
+                    navigate("/order-success", { state: { orderData, orderId } });
+                }, 3000);
             }
+
         } catch (error) {
             console.error(error);
-            alert("Something went wrong. Please try again.");
+            toast.error("Something went wrong. Try again.");
         }
 
         setLoading(false);
     };
 
     return (
-        <form onSubmit={handleSubmit} style={styles.form}>
-            <h2 style={styles.title}>Complete Your Payment</h2>
-            <div style={styles.amountBox}>
-                <p style={styles.amountLabel}>Amount to Pay</p>
-                <h3 style={styles.amountValue}>${(amount / 100).toFixed(2)}</h3>
-            </div>
-            <div style={styles.cardElement}>
-                <CardElement options={{ hidePostalCode: true }} />
-            </div>
-            <button type="submit" disabled={!stripe || loading} style={styles.payButton}>
-                {loading ? "Processing..." : "Pay Now"}
-            </button>
-        </form>
+        <>
+            <form onSubmit={handleSubmit} style={styles.form}>
+                <h2 style={styles.title}>Complete Your Payment</h2>
+                <div style={styles.amountBox}>
+                    <p style={styles.amountLabel}>Amount to Pay</p>
+                    <h3 style={styles.amountValue}>Rs. {(amount / 100).toFixed(2)}</h3>
+                </div>
+                <div style={styles.cardElement}>
+                    <CardElement options={{ hidePostalCode: true }} />
+                </div>
+                <button type="submit" disabled={!stripe || loading} style={styles.payButton}>
+                    {loading ? "Processing..." : "Pay Now"}
+                </button>
+            </form>
+            <ToastContainer position="top-center" />
+        </>
     );
 };
 

@@ -5,16 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="673feb04-d46a-496f-8d4e-1c9edbe150a9" name="Changes" comment="dew after secret">
-      <change afterPath="$PROJECT_DIR$/frontend/public/pancake.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/OrderSuccessPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/ViewPaymentsPage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/services/paymentservice/src/main/java/com/example/paymentservice/controller/PaymentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/paymentservice/src/main/java/com/example/paymentservice/controller/PaymentController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/services/paymentservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/paymentservice/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/services/user-management/src/main/java/com/example/user_management/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/user-management/src/main/java/com/example/user_management/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/layouts/AdminLayout.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/layouts/AdminLayout.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/CheckoutPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/CheckoutPage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DashboardPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DashboardPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Order-Management/OrderFood.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Order-Management/OrderFood.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/RestaurantListPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/RestaurantListPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +93,7 @@
       <workItem from="1743567181605" duration="20000" />
       <workItem from="1744770140168" duration="2018000" />
       <workItem from="1746215254162" duration="2987000" />
-      <workItem from="1746218403074" duration="17669000" />
+      <workItem from="1746218403074" duration="27594000" />
     </task>
     <task id="LOCAL-00001" summary="dew after secret">
       <option name="closed" value="true" />

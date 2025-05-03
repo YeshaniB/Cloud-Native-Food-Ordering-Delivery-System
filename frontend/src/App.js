@@ -12,6 +12,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import DashboardPage from "./pages/DashboardPage";
 import RestaurantListPage from "./pages/RestaurantListPage";
 import RestaurantProfilePage from './pages/RestaurantProfilePage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
+import ViewPaymentsPage from "./pages/ViewPaymentsPage";
 
 const libraries = ['places'];
 
@@ -24,6 +26,7 @@ function App() {
                 <Route path="/orderRestaurant" element={<RestaurantList />} />
                 <Route path="/orderDetails" element={<OrderManagement />} />
                 <Route path="/foodDetails/:restaurantId" element={<OrderFood />} />
+                <Route path="/order-success" element={<OrderSuccessPage />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin" element={<AdminLayout />}>
@@ -32,6 +35,8 @@ function App() {
                     <Route path="restaurants/:id" element={<RestaurantProfilePage />} />
                     <Route path="orderAdmin" element={<OrderAdminDashboard />} />
                     <Route path="adminOrderSales" element={<AdminSalesReports />} />
+                    <Route path="payments" element={<ViewPaymentsPage />} />
+
                 </Route>
             </Routes>
         </BrowserRouter>
