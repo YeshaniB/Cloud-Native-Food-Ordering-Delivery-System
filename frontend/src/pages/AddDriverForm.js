@@ -81,6 +81,7 @@ import { Image } from 'primereact/image';
 import 'primereact/resources/themes/lara-light-blue/theme.css'; // Or your preferred theme
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import
 
 const AddDriverForm = () => {
     const [formData, setFormData] = useState({
@@ -105,11 +106,35 @@ const AddDriverForm = () => {
         setFormData({ ...formData, status: e.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Driver submitted:', formData);
-        // Add API call here
+        const driverData = {
+            name: formData.name,
+            phoneNumber: formData.phoneNumber,
+            vehicleType: formData.vehicleType,
+            vehicleNo: formData.vehicleNo,
+            status: formData.status,
+            location: { lat: 0, lng: 0 }
+        };
+
+        try {
+            const response = await fetch('http://localhost:8083/api/drivers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(driverData)
+            });
+
+            if (!response.ok) throw new Error("Failed to add driver");
+
+            const result = await response.json();
+            console.log("Driver added:", result);
+            alert("Driver registered successfully!");
+        } catch (error) {
+            console.error("Error adding driver:", error);
+            alert("Failed to add driver.");
+        }
     };
+
 
     const sidebarItems = [
         {
@@ -173,19 +198,25 @@ const AddDriverForm = () => {
                             </div>
 
                             <div className="field">
-                                <label htmlFor="email">Email</label>
-                                <InputText id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
+                                <label htmlFor="phoneNumber">Phone Number</label>
+                                <InputText id="phoneNumber" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
                             </div>
 
                             <div className="field">
-                                <label htmlFor="phone">Phone</label>
-                                <InputText id="phone" name="phone" value={formData.phone} onChange={handleChange} required />
+                                <label htmlFor="vehicleType">Vehicle Type</label>
+                                <InputText id="vehicleType" name="vehicleType" value={formData.vehicleType} onChange={handleChange} required />
                             </div>
 
                             <div className="field">
-                                <label htmlFor="status">Status</label>
-                                <Dropdown id="status" name="status" value={formData.status} options={statusOptions} onChange={handleDropdownChange} placeholder="Select Status" />
+                                <label htmlFor="vehicleNo">Vehicle Number</label>
+                                <InputText id="vehicleNo" name="vehicleNo" value={formData.vehicleNo} onChange={handleChange} required />
                             </div>
+
+                            {/*<div className="field">*/}
+                            {/*    <label htmlFor="status">Status</label>*/}
+                            {/*    <Dropdown id="status" name="status" value={formData.status} options={statusOptions} onChange={handleDropdownChange} placeholder="Select Status" />*/}
+                            {/*</div>*/}
+
 
                             <Button type="submit" label="Add Driver" icon="pi pi-check" className="mt-3" />
                         </form>

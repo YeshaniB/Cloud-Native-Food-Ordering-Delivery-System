@@ -1,88 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // <-- Import axios
+import axios from 'axios';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { Tag } from 'primereact/tag';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import '../styles/DriverUserDashboard.css';
-import Header  from "../components/Header";
+import Header from "../components/Header";
 
 const DriverUserDashboard = () => {
     const [status, setStatus] = useState('Offline');
     const [location, setLocation] = useState(null);
     const [deliveries, setDeliveries] = useState([]);
+    const [availableDeliveries, setAvailableDeliveries] = useState([]);
+    const [nearbyOrders, setNearbyOrders] = useState([]);
+    const [loadingOrders, setLoadingOrders] = useState(false);
     const driverId = '681109f24dd27e4fbab9e407';
-
+    const radiusKm = 5;
 
     const statusOptions = ['Offline', 'Available', 'Busy'];
 
-    // Fetch deliveries from backend
-    useEffect(() => {
-        fetchDeliveries();
-    }, []);
-
     const fetchDeliveries = async () => {
         try {
-            const response = await axios.get('http://localhost:8083/api/deliveries'); // Adjust URL
+            const response = await axios.get(`http://localhost:8083/api/deliveries?driverId=${driverId}`);
             setDeliveries(response.data);
         } catch (error) {
             console.error('Error fetching deliveries:', error);
         }
     };
-    // Add this useEffect to periodically check for new deliveries when driver is Available
-    useEffect(() => {
-        let interval;
-        if (status === 'Available') {
-            interval = setInterval(fetchDeliveries, 10000); // Check every 10 seconds
-        }
-        return () => clearInterval(interval);
-    }, [status]);
-    // Update status and location when status/location changes
-    useEffect(() => {
-        handleStatusChange();
-    }, [status]);
 
-    const handleStatusChange = async () => {
-        if (status === 'Offline') {
-            // When offline, set location to 0.0
-            setLocation({ lat: 0.0, lng: 0.0 });
-            await updateStatusAndLocation({ lat: 0.0, lng: 0.0 });
+    const fetchNearbyOrders = async () => {
+        if (!location || status !== 'Available') return;
 
-            // Refresh deliveries when going offline
-            fetchDeliveries();
-        } else {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        const { latitude, longitude } = position.coords;
-                        const newLocation = { lat: latitude, lng: longitude };
-                        setLocation(newLocation);
-                        await updateStatusAndLocation(newLocation);
-
-                        // If switching to Available, refresh deliveries immediately
-                        if (status === 'Available') {
-                            fetchDeliveries();
-                        }
-                    },
-                    (error) => {
-                        console.error('Error getting location:', error);
-
-                        if (status === 'Available') {
-                            updateStatusAndLocation(location || { lat: 0, lng: 0 });
-                        }
-                    },
-                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-                );
-            } else {
-                console.error('Geolocation is not supported by this browser.');
-
-                if (status === 'Available') {
-                    updateStatusAndLocation(location || { lat: 0, lng: 0 });
+        setLoadingOrders(true);
+        try {
+            const response = await axios.get(
+                `http://localhost:8083/api/drivers/${driverId}/nearbyOrders`,
+                {
+                    params: {
+                        radiusKm: radiusKm,
+                        lat: location.lat,
+                        lng: location.lng
+                    }
                 }
-            }
+            );
+            setNearbyOrders(response.data);
+        } catch (error) {
+            console.error('Error fetching nearby orders:', error);
+        } finally {
+            setLoadingOrders(false);
         }
     };
+
     const updateStatusAndLocation = async (loc) => {
         try {
             await axios.put(`http://localhost:8083/api/drivers/updateStatusAndLocation/${driverId}`, {
@@ -94,44 +64,95 @@ const DriverUserDashboard = () => {
         }
     };
 
-    // Handle updating status to "Started"
-    const startDelivery = async (id) => {
-        try {
-            await axios.put(`http://localhost:8083/api/deliveries/${id}/start`);
-            fetchDeliveries(); // Refresh deliveries
-        } catch (error) {
-            console.error('Error starting delivery:', error);
-        }
-    };
-
-    // Handle updating status to "Completed"
-    const completeDelivery = async (id) => {
-        try {
-            await axios.put(`http://localhost:8083/api/deliveries/${id}/complete`);
-            fetchDeliveries(); // Refresh deliveries
-        } catch (error) {
-            console.error('Error completing delivery:', error);
-        }
-    };
-
-    // Handle geolocation to fetch live location
-    useEffect(() => {
-        if (status !== 'Offline') {
+    const handleStatusChange = async () => {
+        if (status === 'Offline') {
+            const offlineLocation = { lat: 0.0, lng: 0.0 };
+            setLocation(offlineLocation);
+            await updateStatusAndLocation(offlineLocation);
+            fetchDeliveries();
+        } else {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
+                    async (position) => {
                         const { latitude, longitude } = position.coords;
-                        setLocation({ lat: latitude, lng: longitude });
+                        const newLocation = { lat: latitude, lng: longitude };
+                        setLocation(newLocation);
+                        await updateStatusAndLocation(newLocation);
+                        if (status === 'Available') {
+                            fetchNearbyOrders();
+                        }
                     },
                     (error) => {
                         console.error('Error getting location:', error);
-                    }
+                        updateStatusAndLocation(location || { lat: 0, lng: 0 });
+                    },
+                    { enableHighAccuracy: true, timeout: 5000 }
                 );
             } else {
                 console.error('Geolocation is not supported by this browser.');
             }
         }
+    };
+
+    useEffect(() => {
+        fetchDeliveries();
+    }, []);
+
+    useEffect(() => {
+        handleStatusChange();
     }, [status]);
+
+    useEffect(() => {
+        let interval;
+        if (status === 'Available') {
+            fetchNearbyOrders();
+            interval = setInterval(fetchNearbyOrders, 10000); // Refresh every 10 seconds
+        } else {
+            setNearbyOrders([]);
+        }
+        return () => clearInterval(interval);
+    }, [status, location]);
+
+    const startDelivery = async (id) => {
+        try {
+            await axios.put(`http://localhost:8083/api/deliveries/${id}/start`);
+            fetchDeliveries();
+        } catch (error) {
+            console.error('Error starting delivery:', error);
+        }
+    };
+
+    const completeDelivery = async (id) => {
+        try {
+            await axios.put(`http://localhost:8083/api/deliveries/${id}/complete`);
+            fetchDeliveries();
+        } catch (error) {
+            console.error('Error completing delivery:', error);
+        }
+    };
+
+    const acceptOrder = async (orderId) => {
+        try {
+            // First create a delivery from the order
+            const response = await axios.post(`http://localhost:8083/api/deliveries`, {
+                orderId,
+                driverId
+            });
+
+            // Update driver status to busy
+            setStatus('Busy');
+            await updateStatusAndLocation(location);
+
+            // Refresh lists
+            fetchDeliveries();
+            fetchNearbyOrders();
+
+            return response.data;
+        } catch (error) {
+            console.error('Error accepting order:', error);
+            throw error;
+        }
+    };
 
     const renderDeliveries = (filterStatus, buttonAction, buttonLabel, buttonIcon) => (
         deliveries
@@ -156,30 +177,44 @@ const DriverUserDashboard = () => {
                 </Card>
             ))
     );
-    // const renderDeliveries = (filterStatus, buttonAction, buttonLabel, buttonIcon) => (
-    //     deliveries
-    //         .filter(del => del.status === filterStatus)
-    //         .map(del => (
-    //             <Card title={`Order ID: ${del.id}`} key={del.id} className="delivery-card">
-    //                 <p><strong>Customer:</strong> {del.customer}</p>
-    //                 <p><strong>Location:</strong> {del.address}</p>
-    //                 {buttonAction && (
-    //                     <Button
-    //                         label={buttonLabel}
-    //                         icon={buttonIcon}
-    //                         onClick={() => buttonAction(del.id)}
-    //                         className="p-button-sm"
-    //                     />
-    //                 )}
-    //             </Card>
-    //         ))
-    // );
 
+    const renderAvailableDeliveries = () => {
+        if (loadingOrders) {
+            return <ProgressSpinner />;
+        }
 
+        if (nearbyOrders.length === 0) {
+            return <p>No nearby orders available within {radiusKm} km</p>;
+        }
+
+        return nearbyOrders.map(order => (
+            <Card
+                title={`Order #${order.orderId}`}
+                key={order.orderId}
+                className="delivery-card available-delivery"
+            >
+                <p><strong>Customer:</strong> {order.customerName}</p>
+                <p><strong>Address:</strong> {order.customerAddress}</p>
+                <p><strong>Items:</strong> {order.orderName.join(', ')}</p>
+                <p><strong>Total:</strong> ${order.totalPrice}</p>
+                <p>
+                    <strong>Distance:</strong>
+                    {order.distance ? `${order.distance.toFixed(2)} km` : 'Calculating...'}
+                </p>
+                <Button
+                    label="Accept Order"
+                    icon="pi pi-check"
+                    onClick={() => acceptOrder(order.orderId)}
+                    className="p-button-sm"
+                    disabled={status !== 'Available'}
+                />
+            </Card>
+        ));
+    };
 
     return (
         <div className="driver-dashboard">
-            <Header/>
+            <Header />
             <div className="dashboard-header">
                 <Dropdown
                     value={status}
@@ -187,30 +222,25 @@ const DriverUserDashboard = () => {
                     onChange={(e) => setStatus(e.value)}
                     placeholder="Select Status"
                 />
-                {/*<Tag*/}
-                {/*    severity={status === 'Available' ? 'success' : status === 'Busy' ? 'warning' : 'danger'}*/}
-                {/*    value={status}*/}
-                {/*/>*/}
             </div>
 
             {location && (
                 <div className="location-display">
                     <h4>Live Location</h4>
-                    <p>Lat: {location.lat}, Lng: {location.lng}</p>
+                    <p>Lat: {location.lat.toFixed(6)}, Lng: {location.lng.toFixed(6)}</p>
+                    <p>Search radius: {radiusKm} km</p>
                 </div>
             )}
 
             <div className="deliveries-tabs">
                 <TabView>
-                    <TabPanel header="Pending Deliveries">
+                    <TabPanel header="Available Orders">
+                        {status === 'Available' ? renderAvailableDeliveries() :
+                            <p>Switch to "Available" status to see nearby orders</p>}
+                    </TabPanel>
+                    <TabPanel header="My Deliveries">
                         {renderDeliveries('Pending', startDelivery, 'Start Delivery', 'pi pi-play')}
-                    </TabPanel>
-
-                    <TabPanel header="Started Deliveries">
                         {renderDeliveries('Started', completeDelivery, 'Complete Delivery', 'pi pi-check')}
-                    </TabPanel>
-
-                    <TabPanel header="Completed Deliveries">
                         {renderDeliveries('Completed', null, '', '')}
                     </TabPanel>
                 </TabView>

@@ -39,6 +39,7 @@ function App() {
           <Route  path="*" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           {/*<Route path="/driverDashNew" element={<DriverDashNew />} />*/}
+
       </Routes>
       </BrowserRouter>
   );
