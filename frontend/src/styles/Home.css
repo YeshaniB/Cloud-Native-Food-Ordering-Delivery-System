@@ -1,0 +1,260 @@
+/* Home Section */
+.home-section {
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 2rem;
+    background-image: url('../images/onlinebg.jpg'); /* path based on your structure */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+
+:root {
+    --bg-color: #ffffff;
+    --second-color: #f54300;
+    --main-color: #7dd87d;
+    --text-color: #130849;
+    --other-color: #999fb9;
+    --logo-color: #b47e6d;
+    --big-font: 4.8rem;
+    --h2-font: 3.2rem;
+    --p-font: 1rem;
+}
+
+/* Home Top Section */
+.home-section {
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 2rem;
+}
+
+/* Home Text */
+.home-text h1.h1Home {
+    font-family: 'Arial', sans-serif;
+    font-size: 3.5rem;
+    color: #2c3e50;
+    text-align: left;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.home-text h3 {
+    color: var(--second-color);
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.home-text p {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Home Image */
+.home-img img {
+    width: 500px;
+    height: auto;
+}
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0); /* Start at original position */
+    }
+    50% {
+        transform: translateY(-20px); /* Move up by 20px */
+    }
+}
+
+.home-img img {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+
+/* About Section */
+.about {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 4rem 2rem;
+    gap: 50px;
+}
+
+.about-img img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--logo-color);
+}
+
+.about-text h2 {
+    margin: 5px 0;
+    font-size: var(--h2-font);
+}
+
+.about-text h3 {
+    color: var(--second-color);
+    font-size: 2rem;
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    color: var(--other-color);
+}
+
+/* Registered Restaurants (Restaurant Catalog Section) */
+.restaurant_catalog {
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.restaurant_catalog h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    margin-bottom: 30px;
+}
+
+.restaurant_catalog h1 span {
+    color: #fac031;
+    margin-left: 15px;
+    font-family: 'MV Boli', cursive;
+}
+
+.restaurant_catalog h1 span::after {
+    content: '';
+    width: 100%;
+    height: 2px;
+    background: #fac031;
+    display: block;
+    position: relative;
+    bottom: 15px;
+}
+
+/* Catalog Box */
+.catalog_box {
+    width: 95%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* <-- 4 columns */
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 2rem 0;
+}
+
+/* Product Card */
+.product-card {
+    width: 100%; /* full width inside grid cell */
+    max-width: 300px;
+    height: 320px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    transition: 0.4s;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    border-radius: 20px;
+    height: 320px;
+}
+
+.product-card img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    z-index: 2;
+    transition: 0.4s;
+}
+
+.product-card:hover img {
+    border-radius: 20px;
+    margin-top: -230px;
+}
+
+.product-card .info {
+    position: absolute;
+    text-align: center;
+    top: 25%;
+    transition: 0.4s;
+    color: #fac031;
+}
+
+.product-card:hover .info {
+    top: 60%;
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    padding: 4rem 2rem;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+}
+
+.news-text {
+    max-width: 600px;
+    text-align: center;
+}
+
+.email-subscription {
+    display: flex;
+    margin: 1rem 0;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.email-input {
+    width: 300px;
+}
+
+.inquiry-btn {
+    margin-top: 1rem;
+}
+
+/* Footer Section */
+.main_footer {
+    background-color: #333;
+    color: #fff;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+.footer_tag h2 {
+    margin-bottom: 1rem;
+    color: #fac031;
+}
+
+.footer_tag p {
+    margin: 0.5rem 0;
+}
+
+.social-icons a {
+    color: #fac031;
+    margin-right: 10px;
+    font-size: 20px;
+}
